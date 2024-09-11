@@ -1,0 +1,14 @@
+.btn-background {
+    background-color: #ffffff45;
+
+    margin: 0 2px;
+    span {
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+
+a {
+    text-decoration: none;
+}
