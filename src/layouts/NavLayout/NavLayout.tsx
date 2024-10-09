@@ -1,4 +1,4 @@
-import logo from '../../assets/images/logo.svg';
+import logo from '../../assets/images/renthome.svg';
 import { Button, ConfigProvider, Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import './NavLayout.scss';
@@ -7,6 +7,7 @@ const { Header } = Layout;
 
 interface Props {
     backgroundHeader: string;
+    color: string;
 }
 const items: MenuProps['items'] = [
     {
@@ -34,14 +35,14 @@ const items: MenuProps['items'] = [
         ),
     },
 ];
-const NavLayout: React.FC<Props> = ({ backgroundHeader }) => {
+const NavLayout: React.FC<Props> = ({ backgroundHeader, color }) => {
     return (
         <Header
             style={{
                 display: 'flex',
                 alignItems: 'center',
                 backgroundColor: `${backgroundHeader}`,
-                position: 'fixed',
+                //position: 'fixed',
                 width: '100%',
                 zIndex: 1,
             }}
@@ -53,11 +54,11 @@ const NavLayout: React.FC<Props> = ({ backgroundHeader }) => {
                 theme={{
                     components: {
                         Menu: {
-                            horizontalItemSelectedColor: '#fff',
-                            itemSelectedColor: '#fff',
+                            horizontalItemSelectedColor: `${color}`,
+                            itemSelectedColor: `${color}`,
                             itemPaddingInline: 25,
-                            itemColor: '#ffffffe6',
-                            itemHoverColor: '#fff',
+                            itemColor: `${color}`,
+                            itemHoverColor: `${color}`,
                         },
                     },
                 }}

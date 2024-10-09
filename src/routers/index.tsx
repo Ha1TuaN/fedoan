@@ -4,6 +4,7 @@ import LoginPage from '../pages/Login/LoginPage';
 import OwnerPage from '../pages/Owner/OwnerPage';
 import ContactPage from '../pages/Contact/ContactPage';
 import DashboardPage from '../pages/Dashboard/DashboardPage';
+import HousePage from '../pages/House/HousePage';
 const publicRoutes: RouteObject[] = [
     {
         path: '/dashboard',
@@ -18,11 +19,15 @@ const publicRoutes: RouteObject[] = [
         element: <LoginPage />,
     },
     {
-        path: '/chu_nha',
+        path: '/house',
+        element: <HousePage />,
+    },
+    {
+        path: '/owner',
         element: <OwnerPage />,
     },
     {
-        path: '/lien_he',
+        path: '/contact',
         element: <ContactPage />,
     },
 ];

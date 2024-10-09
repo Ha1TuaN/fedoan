@@ -9,7 +9,7 @@ function BannerLayout() {
     return (
         <>
             <div className="bannerlayout-content">
-                <NavLayout backgroundHeader={isFixed ? '#4c4b48' : 'transparent'} />
+                <NavLayout backgroundHeader={isFixed ? '#4c4b48' : 'transparent'} color="#fff" />
                 {/* <div className={`header ${isFixed ? 'fixed' : ''}`}>
                 </div> */}
                 <div className="d-flex align-items-center justify-content-around" style={{ height: '100%' }}>
@@ -29,7 +29,7 @@ function BannerLayout() {
                             </iframe>
                         </div>
                         <div className="search-house">
-                            <SearchHouse />
+                            <SearchHouse isCommune={false} />
                         </div>
                     </div>
                 </div>
