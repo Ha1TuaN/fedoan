@@ -1,11 +1,11 @@
-import React, { useEffect , useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { InputNumberProps } from 'antd';
 import { Col, InputNumber, Row, Slider, Space } from 'antd';
 import axios from 'axios';
 export const IntegerStep: React.FC = () => {
     const [inputValue, setInputValue] = useState(0);
     const [infor, setInfor] = useState([]);
-    const [error, setError] = useState<string|null>(null);
+    const [error, setError] = useState<string | null>(null);
     const onChange: InputNumberProps['onChange'] = (newValue) => {
         setInputValue(newValue as number);
     };
@@ -15,16 +15,15 @@ export const IntegerStep: React.FC = () => {
                 const response = await axios.get('');
                 setInfor(response.data);
             } catch (err) {
-               if (err instanceof Error) {
-                   setError(err.message);
-               } else {
-                   setError('An unknown error occurred');
-               }
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError('An unknown error occurred');
+                }
             }
         };
 
         fetchData();
-
     }, []);
     // const FilterHouse = infor.filter((kq) => {
     //     return kq <= inputValue;
@@ -43,27 +42,27 @@ export const IntegerStep: React.FC = () => {
 
 export const DecimalStep: React.FC = () => {
     const [inputValue, setInputValue] = useState(0);
-const [infor, setInfor] = useState([]);
-const [error, setError] = useState<string | null>(null);
+    const [infor, setInfor] = useState([]);
+    const [error, setError] = useState<string | null>(null);
     const onChange: InputNumberProps['onChange'] = (value) => {
         setInputValue(value as number);
     };
 
-useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const response = await axios.get('');
-            setInfor(response.data);
-        } catch (err) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('An unknown error occurred');
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('');
+                setInfor(response.data);
+            } catch (err) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError('An unknown error occurred');
+                }
             }
-        }
-    };
-       fetchData();
-}, []);
+        };
+        fetchData();
+    }, []);
     const FilterHouse = infor.filter((kq) => {
         return kq <= inputValue;
     });
@@ -89,7 +88,5 @@ useEffect(() => {
                 />
             </Col>
         </Row>
-        
     );
 };
-
