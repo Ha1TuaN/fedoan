@@ -5,6 +5,7 @@ import { EnvironmentFilled, EnvironmentOutlined, SearchOutlined } from '@ant-des
 import { useDispatch } from 'react-redux';
 import { setCity, setWard } from '../../utils/slices/searchHouseSlice';
 import { useNavigate } from 'react-router-dom';
+import CardHouse from '../CardItem/CardHouse';
 function SearchHouse2() {
     const [form] = Form.useForm();
     const [cities, setCities] = useState<any>([]);
@@ -87,6 +88,7 @@ function SearchHouse2() {
                     </Space.Compact>
                 </Space>
             </Form>
+            
         </>
     );
 }

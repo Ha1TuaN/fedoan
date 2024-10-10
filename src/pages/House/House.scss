@@ -1,4 +1,5 @@
 .search-house1 {
+    
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -6,3 +7,8 @@
     background-image: linear-gradient(160deg, #c96305 0%, #edb738 50%, #f4d58b 100%);
     height: 100px;
 }
+.d-flex h3{
+         width: max-content ;
+         border: 2px solid #70e86e;
+         border-radius: 5px;
+    }

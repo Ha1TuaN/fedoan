@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux';
 import { store } from './lib/redux/store';
+import CardHouse from './component/CardItem/CardHouse';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

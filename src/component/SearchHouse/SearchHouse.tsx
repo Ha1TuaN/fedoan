@@ -5,6 +5,7 @@ import { EnvironmentFilled, EnvironmentOutlined, SearchOutlined } from '@ant-des
 import { useDispatch } from 'react-redux';
 import { setCity, setWard } from '../../utils/slices/searchHouseSlice';
 import { useNavigate } from 'react-router-dom';
+import CardHouse from '../CardItem/CardHouse';
 
 //const { Search } = Input;
 interface Props {
@@ -126,6 +127,7 @@ const SearchHouse: React.FC<Props> = ({ isCommune }) => {
                     </Space>
                 </div>
             </Form>
+            
         </>
     );
 };
