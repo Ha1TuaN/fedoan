@@ -1,9 +1,9 @@
-import {lazy, FC, Suspense} from 'react';
-import {Route, Routes, Navigate} from 'react-router-dom';
-import {MasterLayout} from '../../_metronic/layout-portal/MasterLayout';
+import { lazy, FC, Suspense } from 'react';
+import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
+import { MasterLayout } from '../../_metronic/layout-portal/MasterLayout';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils';
-import {WithChildren} from '../../_metronic/helpers';
+import { getCSSVariableValue } from '../../_metronic/assets/ts/_utils';
+import { WithChildren } from '../../_metronic/helpers';
 const PortalRoutes = () => {
   const DashboardCustomer = lazy(() => import('../pages/portals/dashboard/DashboardCustomer'));
   const HousePage = lazy(() => import('../pages/portals/houses/HousePage'));
@@ -28,7 +28,7 @@ const PortalRoutes = () => {
   );
 };
 
-const SuspensedView: FC<WithChildren> = ({children}) => {
+const SuspensedView: FC<WithChildren> = ({ children }) => {
   const baseColor = getCSSVariableValue('--kt-primary');
   TopBarProgress.config({
     barColors: {
@@ -40,4 +40,4 @@ const SuspensedView: FC<WithChildren> = ({children}) => {
   return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>;
 };
 
-export {PortalRoutes};
+export { PortalRoutes };

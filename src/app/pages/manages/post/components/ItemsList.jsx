@@ -10,11 +10,14 @@ import {requestPOST, requestDELETE} from 'src/utils/baseAPI';
 import TableList from 'src/app/components/TableList';
 import ModalItem from './ChiTietModal';
 import moment from 'moment';
+import {formatNumber} from 'src/utils/utils';
+import {useNavigate} from 'react-router-dom';
 
 const {Paragraph} = Typography;
 
 const UsersList = (props) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const modalVisible = useSelector((state) => state.modal.modalVisible);
   const {dataSearch} = props;
   const random = useSelector((state) => state.modal.random);
@@ -31,7 +34,7 @@ const UsersList = (props) => {
       try {
         setLoading(true);
         const res = await requestPOST(
-          `api/v1/reportgenerals/search`,
+          `api/v1/motels/search`,
           _.assign(
             {
               advancedSearch: {
@@ -72,11 +75,10 @@ const UsersList = (props) => {
   const handleButton = async (type, item) => {
     switch (type) {
       case 'chi-tiet':
-        dispatch(actionsModal.setDataModal(item));
-        dispatch(actionsModal.setModalVisible(true));
+        navigate(`/manage/owner/viewpost/${item?.id}`);
         break;
       case 'delete':
-        var res = await requestDELETE(`api/v1/reportgenerals/${item.id}`);
+        var res = await requestDELETE(`api/v1/motels/${item.id}`);
         if (res) {
           toast.success('Thao tác thành công!');
           dispatch(actionsModal.setRandom());
@@ -95,31 +97,65 @@ const UsersList = (props) => {
 
   const columns = [
     {
-      title: 'Tên kế hoạch',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'STT',
+      dataIndex: 'index',
+      key: 'index',
+      className: 'text-center',
+      width: 100,
+      render: (text, record, index) => <div>{(offset - 1) * size + index + 1}</div>,
     },
     {
-      title: 'Người thực hiện',
-      dataIndex: 'executor',
-      key: 'executor',
+      title: 'Loại căn hộ',
+      dataIndex: 'type',
+      key: 'type',
+      width: '10%',
     },
     {
-      title: 'Ngày báo cáo',
-      dataIndex: 'reportDate',
-      key: 'reportDate',
-      render: (data) => (data ? moment(data).format('DD/MM/YYYY') : ''),
+      title: 'Loại căn hộ',
+      dataIndex: 'address',
+      key: 'address',
+      width: '30%',
+    },
+    {
+      title: 'Giá cho thuê',
+      dataIndex: 'price',
+      key: 'price',
+      width: '8%',
+      className: 'text-center',
+      render: (text, record) => <span>{formatNumber(record.price)} đ</span>,
+    },
+    {
+      title: 'Diện tích',
+      dataIndex: 'area',
+      key: 'area',
+      width: '8%',
+      className: 'text-center',
+      render: (text, record) => (
+        <span>
+          {formatNumber(record.area)} m<sup>2</sup>
+        </span>
+      ),
+    },
+    {
+      title: 'Số lượng phòng ngủ',
+      dataIndex: 'bedroomCount',
+      className: 'text-center',
+      key: 'bedroomCount',
+      width: '8%',
+    },
+    {
+      title: 'Số lượng phòng tắm',
+      dataIndex: 'bathroomCount',
+      key: 'bathroomCount',
+      className: 'text-center',
+      width: '8%',
     },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
+      width: '10%',
       className: 'text-center',
-    },
-    {
-      title: 'Ghi chú',
-      dataIndex: 'note',
-      key: 'note',
     },
     {
       title: 'Thao tác',
@@ -140,6 +176,30 @@ const UsersList = (props) => {
             >
               <i className='fa fa-eye'></i>
             </a>
+            {record.status === 'Chưa thuê' && (
+              <a
+                className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 mb-1'
+                data-toggle='m-tooltip'
+                title='Hợp đồng cho thuê'
+                onClick={() => {
+                  handleButton(`hop-dong`, record);
+                }}
+              >
+                <i className='fa-solid fa-file-contract'></i>
+              </a>
+            )}
+            <Popconfirm
+              title='Xoá?'
+              onConfirm={() => {
+                handleButton(`delete`, record);
+              }}
+              okText='Xoá'
+              cancelText='Huỷ'
+            >
+              <a className='btn btn-icon btn-bg-light btn-active-color-danger btn-sm me-1 mb-1' data-toggle='m-tooltip' title='Xoá'>
+                <i className='fa fa-trash'></i>
+              </a>
+            </Popconfirm>
           </div>
         );
       },

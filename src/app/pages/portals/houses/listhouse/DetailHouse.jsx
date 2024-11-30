@@ -114,9 +114,7 @@ function DetailHouse() {
                   <div>
                     <h6 className='text-muted'>Thông tin mô tả</h6>
                   </div>
-                  <div>
-                    <p className=''>{data?.description}</p>
-                  </div>
+                  <div dangerouslySetInnerHTML={{__html: data.description}} />
                 </div>
               </div>
             </div>

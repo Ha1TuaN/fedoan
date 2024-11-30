@@ -12,7 +12,7 @@ const FooterWrapper = () => {
   return (
     <footer className="footer mt-auto py-3 bg-light">
       <div className="container">
-        <span className="text-muted">© Phần mềm quản lý nhiệm vụ khoa học.</span>
+        <span className="text-muted"></span>
       </div>
     </footer>
   );

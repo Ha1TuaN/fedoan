@@ -5,11 +5,11 @@ import {Divider, Form, Select, Input, InputNumber, Button} from 'antd';
 import * as actionsModal from 'src/setup/redux/modal/Actions';
 
 import {toast} from 'react-toastify';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import _ from 'lodash';
-import {API_URL, requestPOST} from 'src/utils/baseAPI';
+import {API_URL, requestGET, requestPOST, requestPUT} from 'src/utils/baseAPI';
 import ImageUpload from '../../../components/FileUpload';
-import {convertImage} from 'src/utils/utils';
+import {convertImage, handleImage, handleImage2} from 'src/utils/utils';
 import {filterType} from 'src/utils/filter';
 import HeaderTitle from '../../../components/HeaderTitle';
 import {useAuth} from '../../../../app/modules/auth';
@@ -31,6 +31,40 @@ const PostCreatePage = () => {
   const [districts, setDistricts] = useState([]);
   const [provinceCode, setProvinceCode] = useState(null);
   const [editorData, setEditorData] = useState('');
+  const {id} = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await requestGET(`api/v1/motels/${id}`);
+      console.log(res);
+      var _data = res?.data ?? null;
+      if (_data) {
+        _data.province = _data.provinceId
+          ? {
+              value: _data.provinceId ?? null,
+              label: _data?.provinceName ?? null,
+            }
+          : null;
+
+        _data.district = _data?.districtId
+          ? {
+              value: _data?.districtId ?? null,
+              label: _data?.districtName ?? null,
+            }
+          : null;
+        setEditorData(_data?.description);
+
+        setFile(handleImage2(_data.imageHouses));
+
+        form.setFieldsValue(_data);
+      }
+    };
+    if (id) {
+      fetchData();
+    }
+    return () => {};
+  }, [id]);
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await requestPOST(`api/v1/areas/search`, {
@@ -69,6 +103,9 @@ const PostCreatePage = () => {
       // if (id) {
       //     formData.id = id;
       // }
+      formData.title = 'abc';
+
+      formData.description = editorData;
       formData.imageHouses = convertImage(file);
       formData.userId = currentUser.id;
       formData.userFullName = currentUser.fullName;
@@ -76,13 +113,13 @@ const PostCreatePage = () => {
       formData.userAvatar = currentUser.imageUrl;
 
       console.log(formData);
-      const res = await requestPOST(`api/v1/motels`, formData);
-      // id
-      //     ? await requestPUT(`api/v1/motels/${id}`, formData)
-      //     :
+
+      // const res = ;
+      const res = id ? await requestPUT(`api/v1/motels/${id}`, formData) : await requestPOST(`api/v1/motels`, formData);
       if (res.data) {
         toast.success('Cập nhật thành công!');
         dispatch(actionsModal.setRandom());
+        navigate('/manage/owner/post');
       } else {
         //toast.error('Thất bại, vui lòng thử lại!');
         const errors = Object.values(res?.data?.errors ?? {});
@@ -136,7 +173,7 @@ const PostCreatePage = () => {
                 <HeaderTitle title={'ĐỊA CHỈ CHO THUÊ'} />
                 <div className='row'>
                   <div className='col-xl-6 col-lg-6'>
-                    <FormItem label='Tỉnh/Thành phố' name='provinces'>
+                    <FormItem label='Tỉnh/Thành phố' name='province'>
                       <Select
                         showSearch
                         placeholder='Chọn Tỉnh/Thành phố'
@@ -164,7 +201,7 @@ const PostCreatePage = () => {
                     </FormItem>
                   </div>
                   <div className='col-xl-6 col-lg-6'>
-                    <FormItem label='Quận/Huyện' name='districts'>
+                    <FormItem label='Quận/Huyện' name='district'>
                       <Select
                         showSearch
                         placeholder='Chọn Quận/Huyện'
@@ -218,7 +255,7 @@ const PostCreatePage = () => {
                 <HeaderTitle title={'THÔNG TIN MÔ TẢ'} />
 
                 <div className='row'>
-                  <div className='col-xl-6 col-lg-6'>
+                  <div className='col-xl-12 col-lg-12'>
                     <FormItem label='Loại căn hộ' name='type'>
                       <Select
                         showSearch
@@ -230,23 +267,6 @@ const PostCreatePage = () => {
                           value: item.value,
                           label: item.label,
                         }))}
-                      />
-                    </FormItem>
-                  </div>
-                  <div className='col-xl-12 col-lg-12'>
-                    <FormItem label='Tiêu đề' name='title'>
-                      <Input />
-                    </FormItem>
-                  </div>
-                  <div className='col-xl-12 col-lg-12'>
-                    <FormItem label='Mô tả' name='description'>
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={editorData}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setEditorData(data);
-                        }}
                       />
                     </FormItem>
                   </div>
@@ -275,7 +295,7 @@ const PostCreatePage = () => {
                     </FormItem>
                   </div>
                   <div className='col-xl-3 col-lg-3'>
-                    <FormItem label='Số lượng phòng ngủ' name='numberBedroom'>
+                    <FormItem label='Số lượng phòng ngủ' name='bedroomCount'>
                       <InputNumber
                         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                         parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
@@ -285,12 +305,25 @@ const PostCreatePage = () => {
                     </FormItem>
                   </div>
                   <div className='col-xl-3 col-lg-3'>
-                    <FormItem label='Số lượng phòng tắm' name='bathRoom'>
+                    <FormItem label='Số lượng phòng tắm' name='bathroomCount'>
                       <InputNumber
                         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                         parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                         style={{width: '100%'}}
                         addonAfter='phòng'
+                      />
+                    </FormItem>
+                  </div>
+
+                  <div className='col-xl-12 col-lg-12'>
+                    <FormItem label='Mô tả' name='description'>
+                      <CKEditor
+                        editor={ClassicEditor}
+                        data={editorData || ''}
+                        onChange={(event, editor) => {
+                          const data = editor.getData();
+                          setEditorData(data);
+                        }}
                       />
                     </FormItem>
                   </div>

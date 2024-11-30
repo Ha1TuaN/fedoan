@@ -10,9 +10,9 @@ import * as action from 'src/setup/redux/filter/Actions';
 const FilterHouse = () => {
   const dispatch = useDispatch();
   const priceRange = useSelector((state) => state.filter.price);
+  const areaRange = useSelector((state) => state.filter.area);
 
   const [areaOptions, setAreaOptions] = useState([]);
-  const [areaRange, setAreaRange] = useState([0, 1000]);
   //const [priceRange, setPriceRange] = useState([0, 100000000]);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -66,7 +66,7 @@ const FilterHouse = () => {
 
   const handleAreaChange = (value) => {
     if (value[0] !== areaRange[0] || value[1] !== areaRange[1]) {
-      setAreaRange(value);
+      dispatch(action.setArea(value));
     }
   };
 
@@ -77,7 +77,7 @@ const FilterHouse = () => {
         <h3 className='text-lg font-semibold mb-4'>Loại hình bất động sản</h3>
         <Form form={form} layout='vertical'>
           <Form.Item name='type' className='mb-0'>
-            <Checkbox.Group style={{width: '100%'}}>
+            <Checkbox.Group style={{width: '100%'}} onChange={(value) => dispatch(action.setType(value))}>
               <Row>
                 {filterType.map((item) => (
                   <Col span={24} key={item.value}>
@@ -97,7 +97,7 @@ const FilterHouse = () => {
         <div className='d-flex justify-content-between'>
           <h6>Khoảng giá</h6>
         </div>
-        <div className='w-250px'>
+        <div className=''>
           <Slider range max={100000000} value={priceRange} onChange={handlePriceChange} />
           <div className='d-flex justify-content-between '>
             <InputNumber
@@ -138,7 +138,7 @@ const FilterHouse = () => {
         <div className='d-flex justify-content-between'>
           <h6>Diện tích sàn</h6>
         </div>
-        <div className=' w-250px'>
+        <div className=' '>
           <Slider range max={1000} value={areaRange} onChange={handleAreaChange} />
           <div className='d-flex justify-content-between '>
             <InputNumber

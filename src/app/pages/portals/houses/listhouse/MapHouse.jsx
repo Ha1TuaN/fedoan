@@ -1,46 +1,128 @@
-import React, {useState} from 'react';
-import {GoogleMap, LoadScript, Marker} from '@react-google-maps/api';
+import React, {useEffect, useState} from 'react';
+import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api'; // Đảm bảo nhập đúng
+import {Cascader, Spin, notification} from 'antd';
+import {requestPOST} from 'src/utils/baseAPI';
+import _ from 'lodash';
+import {useDispatch} from 'react-redux';
+import * as action from '../../../../../setup/redux/filter/Actions';
 
-const locations = [
-  {id: 1, name: 'Location 1', lat: 10.8231, lng: 106.6297},
-  {id: 2, name: 'Location 2', lat: 10.762622, lng: 106.660172},
-  {id: 3, name: 'Location 3', lat: 10.7769, lng: 106.7009},
-];
+const fetchAreas = async () => {
+  try {
+    const res = await requestPOST('api/v1/areas/search', {
+      advancedSearch: {
+        fields: ['name', 'shortName', 'code'],
+        keyword: null,
+      },
+      pageNumber: 1,
+      pageSize: 1000,
+      level: 1,
+      orderBy: ['code ASC'],
+    });
 
-const mapContainerStyle = {
-  width: '100%',
-  height: '500px',
+    return res.data.map((item) => ({
+      ...item,
+      value: item.id,
+      label: item.name,
+      children: item.children.map((i) => ({
+        ...i,
+        value: i.id,
+        label: i.name,
+      })),
+    }));
+  } catch (error) {
+    notification.error({
+      message: 'Error',
+      description: 'Failed to load areas. Please try again later.',
+    });
+    throw error;
+  }
 };
 
-const center = {
-  lat: 10.762622,
-  lng: 106.660172,
-};
+const MapHouse = ({locations}) => {
+  const dispatch = useDispatch();
+  const [areas, setAreas] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [place, setPlace] = useState({lat: 21.0285, lng: 105.8542});
 
-const MapHouse = () => {
-  const [selectedLocation, setSelectedLocation] = useState(locations[0]);
+  const {isLoaded} = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyCPmrcwqPtSIze8rorai9g0q63BySdWHQg', // Đảm bảo rằng API key hợp lệ
+  });
 
-  const handleChange = (event) => {
-    const locationId = parseInt(event.target.value, 10);
-    const location = locations.find((loc) => loc.id === locationId);
-    setSelectedLocation(location);
+  const calculateCenter = () => {
+    if (locations.length === 0) return {lat: 0, lng: 0};
+
+    const latitudes = locations.map((location) => location.lat);
+    const longitudes = locations.map((location) => location.lng);
+
+    const avgLat = latitudes.reduce((acc, lat) => acc + lat, 0) / latitudes.length;
+    const avgLng = longitudes.reduce((acc, lng) => acc + lng, 0) / longitudes.length;
+
+    return {lat: avgLat, lng: avgLng};
   };
 
-  return (
-    <div>
-      <select onChange={handleChange} value={selectedLocation.id}>
-        {locations.map((location) => (
-          <option key={location.id} value={location.id}>
-            {location.name}
-          </option>
-        ))}
-      </select>
+  const center = calculateCenter();
 
-      <LoadScript googleMapsApiKey='AIzaSyCPmrcwqPtSIze8rorai9g0q63BySdWHQg'>
-        <GoogleMap mapContainerStyle={mapContainerStyle} center={{lat: selectedLocation.lat, lng: selectedLocation.lng}} zoom={12}>
-          <Marker position={{lat: selectedLocation.lat, lng: selectedLocation.lng}} />
+  useEffect(() => {
+    const loadAreas = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchAreas();
+        setAreas(data ?? []);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAreas();
+  }, []);
+
+  const displayRender = (labels) => labels[labels.length - 1];
+  const handleCascaderChange = (value, place) => {
+    if (value) {
+      const address = place[1].name;
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({address}, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          const location = results[0].geometry.location;
+          setPlace({
+            lat: location.lat(),
+            lng: location.lng(),
+          });
+        } else {
+          console.error('Geocoder failed due to:', status);
+        }
+      });
+      dispatch(action.setProvinceId(value[0]));
+      dispatch(action.setDistrictId(value[1]));
+    } else {
+      dispatch(action.setProvinceId(null));
+      dispatch(action.setDistrictId(null));
+    }
+  };
+
+  if (!isLoaded) return <Spin tip='Loading map...' />;
+
+  return (
+    <div className='card-body'>
+      <Spin spinning={loading}>
+        <Cascader
+          size='large'
+          options={areas}
+          expandTrigger='hover'
+          displayRender={displayRender}
+          onChange={handleCascaderChange}
+          placeholder='Tìm theo khu vực'
+          style={{width: '100%', marginBottom: '10px'}}
+        />
+      </Spin>
+
+      <div style={{width: '100%', height: '300px'}}>
+        <GoogleMap mapContainerStyle={{width: '100%', height: '100%'}} zoom={15} center={place}>
+          {locations.map((location) => (
+            <Marker key={location.id} position={{lat: location.lat, lng: location.lng}} />
+          ))}
         </GoogleMap>
-      </LoadScript>
+      </div>
     </div>
   );
 };

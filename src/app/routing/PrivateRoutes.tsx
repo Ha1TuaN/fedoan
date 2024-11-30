@@ -1,19 +1,17 @@
-import {lazy, FC, Suspense} from 'react';
-import {Route, Routes, Navigate, Outlet} from 'react-router-dom';
-import {MasterLayout} from '../../_metronic/layout/MasterLayout';
+import { lazy, FC, Suspense } from 'react';
+import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
+import { MasterLayout } from '../../_metronic/layout/MasterLayout';
 import TopBarProgress from 'react-topbar-progress-indicator';
-import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper';
-import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils';
-import {WithChildren} from '../../_metronic/helpers';
-import {useAuth} from 'src/app/modules/auth';
-import {CheckRole} from 'src/utils/utils';
+import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper';
+import { getCSSVariableValue } from '../../_metronic/assets/ts/_utils';
+import { WithChildren } from '../../_metronic/helpers';
+import { useAuth } from 'src/app/modules/auth';
+import { CheckRole } from 'src/utils/utils';
 
 const PrivateRoutes = () => {
-  const GeneralsPage = lazy(() => import('../pages/manages/catalog/GeneralsPage'));
-  const SystemsPage = lazy(() => import('../pages/manages/systems/SystemsPage'));
   const OwnerPage = lazy(() => import('../pages/manages/OwnerPage'));
 
-  const {currentUser, currentPermissions} = useAuth();
+  const { currentUser, currentPermissions } = useAuth();
 
   return (
     <Routes>
@@ -31,24 +29,6 @@ const PrivateRoutes = () => {
               </SuspensedView>
             }
           />
-
-          <Route
-            path='general/*'
-            element={
-              <SuspensedView>
-                <GeneralsPage />
-              </SuspensedView>
-            }
-          />
-
-          <Route
-            path='system/*'
-            element={
-              <SuspensedView>
-                <SystemsPage />
-              </SuspensedView>
-            }
-          />
         </Route>
 
         {/* Fallback route for unknown paths */}
@@ -58,7 +38,7 @@ const PrivateRoutes = () => {
   );
 };
 
-const SuspensedView: FC<WithChildren> = ({children}) => {
+const SuspensedView: FC<WithChildren> = ({ children }) => {
   const baseColor = getCSSVariableValue('--kt-primary');
   TopBarProgress.config({
     barColors: {
@@ -70,4 +50,4 @@ const SuspensedView: FC<WithChildren> = ({children}) => {
   return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>;
 };
 
-export {PrivateRoutes};
+export { PrivateRoutes };

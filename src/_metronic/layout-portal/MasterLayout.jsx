@@ -191,10 +191,10 @@ const MasterLayout = () => {
                                     key: 'createdPost',
                                     label: (
                                       <a
-                                        onClick={() => {
-                                          console.log('....');
-                                          navigate(`/owner/createdpost`);
-                                        }}
+                                        href='/manage/owner/createdpost'
+                                        // onClick={() => {
+                                        //   navigate('/manage/owner/createdpost');
+                                        // }}
                                       >
                                         Tạo bài đăng
                                       </a>
@@ -202,7 +202,7 @@ const MasterLayout = () => {
                                   },
                                   {
                                     key: 'managePost',
-                                    label: <a>Quản lý bài đăng</a>,
+                                    label: <a onClick={() => navigate('/manage/owner/post')}>Quản lý bài đăng</a>,
                                   },
                                   {
                                     key: 'log-out',
@@ -313,39 +313,9 @@ const MasterLayout = () => {
             {/*end::Header*/}
 
             <div className='wrapper-content py-6'>
-              {checkIsActive(pathname, '/portal/profile') ? (
-                <>
-                  <ToolbarWrapper />
-                  <Content>
-                    <Outlet />
-                  </Content>
-                </>
-              ) : checkIsActive(pathname, '/customer/dashboard') ? (
-                <>
-                  <ToolbarWrapper />
-                  <Content>
-                    <Outlet />
-                  </Content>
-                </>
-              ) : checkIsActive(pathname, `/portal/profile`) ? (
-                <>
-                  <Content>
-                    <Outlet />
-                  </Content>
-                </>
-              ) : (
-                <Content>
-                  <Outlet />
-                </Content>
-              )}
-
-              {/* {currentUser?.profilePersonalId ? (
-              
-              ) : (
-                <div className='d-flex justify-content-center align-items-center'>
-                  <h1 className='text-danger'>Tài khoản chưa liên kết với lý lịch khoa học</h1>
-                </div>
-              )} */}
+              <Content>
+                <Outlet />
+              </Content>
             </div>
             <FooterWrapper />
           </div>

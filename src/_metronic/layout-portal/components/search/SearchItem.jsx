@@ -43,35 +43,6 @@ const SearchItem = () => {
     fetchData();
   }, []);
 
-  const items1 = [
-    {
-      key: '1',
-      label: (
-        <a target='_blank' rel='noopener noreferrer' href='https://www.antgroup.com'>
-          1st menu item
-        </a>
-      ),
-    },
-    {
-      key: '2',
-      label: (
-        <a target='_blank' rel='noopener noreferrer' href='https://www.aliyun.com'>
-          2nd menu item
-        </a>
-      ),
-    },
-    {
-      key: '3',
-      label: (
-        <a target='_blank' rel='noopener noreferrer' href='https://www.luohanacademy.com'>
-          3rd menu item
-        </a>
-      ),
-    },
-  ];
-
-  const menu = <Menu items={items1} />;
-
   const onChange = (value) => {
     console.log(value);
   };
@@ -90,18 +61,8 @@ const SearchItem = () => {
               displayRender={displayRender}
               onChange={onChange}
               placeholder='Tìm theo khu vực'
+              style={{width: '400px'}}
             />
-
-            <Dropdown overlay={menu} placement='bottom'>
-              <Button size='large' className='text-muted'>
-                Giá <DownOutlined />
-              </Button>
-            </Dropdown>
-            <Dropdown overlay={menu} placement='bottom'>
-              <Button size='large' className='text-muted'>
-                Diện tích <DownOutlined />
-              </Button>
-            </Dropdown>
             <Button type='primary' size='large'>
               Tìm kiếm
             </Button>

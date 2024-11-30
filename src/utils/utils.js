@@ -12,7 +12,18 @@ export const convertImage = (array) => {
     image: item.response[0],
   }));
 };
-
+export const handleImage2 = (array) => {
+  const arr = array.map((item) => item.image);
+  let res = [];
+  arr.forEach((i) => {
+    res.push({
+      url: i,
+      path: i,
+      name: i.substring(i.lastIndexOf('/') + 1),
+    });
+  });
+  return res;
+};
 export const handleImage = (array) => {
   return array.map((item) => item.image);
 };

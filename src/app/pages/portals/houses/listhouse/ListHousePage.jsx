@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import FilterHouse from './FilterHouse';
-import {Card, List, Carousel, Avatar} from 'antd';
+import {Card, List, Carousel, Avatar, Radio} from 'antd';
 import {requestPOST} from 'src/utils/baseAPI';
 import _ from 'lodash';
 import {formatNumber} from 'src/utils/utils';
@@ -26,6 +26,8 @@ function ListHousePage() {
   const priceRange = useSelector((state) => state.filter.price);
   const areaRange = useSelector((state) => state.filter.area);
   const type = useSelector((state) => state.filter.type);
+  const districtId = useSelector((state) => state.filter.districtId);
+  const provinceId = useSelector((state) => state.filter.provinceId);
 
   const [loading, setLoading] = useState(false);
   const [size, setSize] = useState(10);
@@ -45,8 +47,10 @@ function ListHousePage() {
             pageNumber: 1,
             pageSize: 1000,
             price: priceRange,
-            // area: areaRange,
-            // type: type,
+            area: areaRange,
+            type: type,
+            provinceId: provinceId,
+            districtId: districtId,
             orderBy: ['createdOn DESC'],
           })
         );
@@ -61,21 +65,46 @@ function ListHousePage() {
     };
 
     fetchData();
-  }, [priceRange]);
+  }, [priceRange, areaRange, type, districtId, provinceId]);
   return (
     <>
       <div className='row'>
-        <div className='col-3'>
+        <div className='col-2'>
           <FilterHouse />
         </div>
-        <div className='col-6'>
+        <div className='col-10'>
           <div className='row'>
             <div className='col-12'>
-              <MapHouse />
+              <MapHouse
+                locations={data.map((item) => ({
+                  id: item.id,
+                  lat: item.lat,
+                  lng: item.lng,
+                }))}
+              />
+            </div>
+            <div className='col-12'>
+              <div className='card card-custom card-px-0'>
+                <div className='card-body'>
+                  <div className='d-flex align-items-center'>
+                    <h6 className='fs-7 mt-1 me-3'>Sắp xếp theo:</h6>
+                    <Radio.Group
+                      block
+                      options={[
+                        {label: 'Mới nhất', value: 'new'},
+                        {label: 'Giá thấp đến cao', value: 'gia'},
+                        {label: 'Pear', value: 'Pear'},
+                        {label: 'Orange', value: 'Orange'},
+                      ]}
+                      defaultValue='gia'
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div className='col-12'>
               <List
-                grid={{gutter: 16, column: 3}}
+                grid={{gutter: 16, column: 4}}
                 dataSource={data}
                 renderItem={(item) => (
                   <List.Item>

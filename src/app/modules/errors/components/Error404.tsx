@@ -30,7 +30,7 @@ const Error404: FC<{ isPortal?: boolean }> = ({ isPortal = true }) => {
 
       {/* begin::Link */}
       <div className='mb-0'>
-        <Link to={isPortal ? '/portal/sciencetask/registrationschedules' : 'manage/dashboard'} className='btn btn-sm btn-primary'>
+        <Link to='/' className='btn btn-sm btn-primary'>
           Return Home
         </Link>
       </div>

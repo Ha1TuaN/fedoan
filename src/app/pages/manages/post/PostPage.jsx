@@ -28,7 +28,7 @@ const PostPage = () => {
     <>
       <div className='card card-xl-stretch mb-xl-9'>
         <div className='px-3 py-3 border-bottom border-secondary border-bottom-solid d-flex align-items-center justify-content-between'>
-          <h3 className='card-title fw-bold text-header-td fs-4 mb-0'>{'Loại nhiệm vụ KHCN'}</h3>
+          <h3 className='card-title fw-bold text-header-td fs-4 mb-0'>{'Quản lý bài đăng'}</h3>
           <div className='card-toolbar'>
             <div className='btn-group me-2 w-200px'>
               <input
