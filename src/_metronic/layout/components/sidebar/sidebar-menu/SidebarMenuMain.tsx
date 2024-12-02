@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React from 'react';
-import {useIntl} from 'react-intl';
-import {KTSVG} from '../../../../helpers';
-import {SidebarMenuItemWithSub} from './SidebarMenuItemWithSub';
-import {SidebarMenuItem} from './SidebarMenuItem';
-import {useAuth} from 'src/app/modules/auth';
+import { useIntl } from 'react-intl';
+import { KTSVG } from '../../../../helpers';
+import { SidebarMenuItemWithSub } from './SidebarMenuItemWithSub';
+import { SidebarMenuItem } from './SidebarMenuItem';
+import { useAuth } from 'src/app/modules/auth';
 
 const SidebarMenuMain = () => {
   const intl = useIntl();
-  const {currentUser, logout} = useAuth();
+  const { currentUser, logout } = useAuth();
 
   return (
     <>
@@ -16,7 +16,9 @@ const SidebarMenuMain = () => {
 
       <SidebarMenuItemWithSub to='/manage/owner' title='Quản lý bài đăng' icon='/media/icons/duotune/general/gen025.svg'>
         <SidebarMenuItem to='/manage/owner/post' title='Quản lý bài đăng' hasBullet={true} />
+        <SidebarMenuItem to='/manage/owner/createdpost' title='Tạo bài đăng' hasBullet={true} />
       </SidebarMenuItemWithSub>
+      <SidebarMenuItem to='/manage/profile' icon='/media/icons/duotune/communication/com006.svg' title={'Thông tin người dùng'} />
 
       {/* <SidebarMenuItemWithSub to='/manage/system' title='Hệ thống' icon='/media/icons/duotune/coding/cod001.svg'>
         <SidebarMenuItem to='/manage/system/organizationunits' title='Cơ cấu tổ chức' hasBullet={true} />
@@ -29,4 +31,4 @@ const SidebarMenuMain = () => {
   );
 };
 
-export {SidebarMenuMain};
+export { SidebarMenuMain };
