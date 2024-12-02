@@ -1,53 +1,39 @@
-import { lazy, FC, Suspense } from 'react';
-import { Route, Routes, Navigate, Outlet } from 'react-router-dom';
-import { MasterLayout } from '../../_metronic/layout/MasterLayout';
-import TopBarProgress from 'react-topbar-progress-indicator';
-import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper';
-import { getCSSVariableValue } from '../../_metronic/assets/ts/_utils';
-import { WithChildren } from '../../_metronic/helpers';
-import { useAuth } from 'src/app/modules/auth';
-import { CheckRole } from 'src/utils/utils';
+import {lazy, FC, Suspense} from 'react';
+import {Route, Routes, Navigate} from 'react-router-dom';
+import {MasterLayout} from '../../_metronic/layout/MasterLayout';
+import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper';
+import {WithChildren} from '../../_metronic/helpers';
+import {useAuth} from 'src/app/modules/auth';
 
 const PrivateRoutes = () => {
   const OwnerPage = lazy(() => import('../pages/manages/OwnerPage'));
+  const {currentUser} = useAuth();
 
-  const { currentUser, currentPermissions } = useAuth();
+  if (!currentUser) {
+    // Redirect unauthenticated users to login
+    return <Navigate to='/auth/login' />;
+  }
 
   return (
     <Routes>
       <Route element={<MasterLayout />}>
-        {/* Redirect to Dashboard after successful login/registration */}
         <Route path='dashboard' element={<DashboardWrapper />} />
-
-        {/* Nested Routes */}
-        <Route element={<Outlet />}>
-          <Route
-            path='owner/*'
-            element={
-              <SuspensedView>
-                <OwnerPage />
-              </SuspensedView>
-            }
-          />
-        </Route>
-
-        {/* Fallback route for unknown paths */}
+        <Route
+          path='owner/*'
+          element={
+            <SuspensedView>
+              <OwnerPage />
+            </SuspensedView>
+          }
+        />
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
     </Routes>
   );
 };
 
-const SuspensedView: FC<WithChildren> = ({ children }) => {
-  const baseColor = getCSSVariableValue('--kt-primary');
-  TopBarProgress.config({
-    barColors: {
-      '0': baseColor,
-    },
-    barThickness: 1,
-    shadowBlur: 5,
-  });
-  return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>;
+const SuspensedView: FC<WithChildren> = ({children}) => {
+  return <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>;
 };
 
-export { PrivateRoutes };
+export {PrivateRoutes};

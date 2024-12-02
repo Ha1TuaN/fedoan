@@ -57,7 +57,7 @@ const HeaderUserMenu = () => {
             <div className='d-flex flex-column'>
               <div className='fw-bolder d-flex align-items-center fs-5'>{currentUser?.fullName}</div>
               <a href='#' className='fw-bold text-muted text-hover-primary fs-7'>
-                {currentUser?.email}
+                {currentUser?.phoneNumber}
               </a>
             </div>
           </div>
@@ -80,7 +80,7 @@ const HeaderUserMenu = () => {
             }}
             className='menu-link px-5'
           >
-            Đổi mật khẩu
+            Trở về trang khách hàng
           </a>
         </div>
 
@@ -90,78 +90,6 @@ const HeaderUserMenu = () => {
           </a>
         </div>
       </div>
-      {modalVisible ? (
-        <Modal show={modalVisible} onExited={handleCancel} keyboard={true} scrollable={true} onEscapeKeyDown={handleCancel}>
-          <Modal.Header className='bg-primary px-4 py-3'>
-            <Modal.Title className='text-white'>Đổi mật khẩu</Modal.Title>
-            <button type='button' className='btn-close btn-close-white' aria-label='Close' onClick={handleCancel}></button>
-          </Modal.Header>
-          <Modal.Body>
-            <Form form={form} layout='vertical' /* initialValues={initData} */ autoComplete='off'>
-              <div className='row'>
-                <div className='col-xl-12 col-lg-12'>
-                  <FormItem label='Mật khẩu cũ' name='password' rules={[{required: true, message: 'Không được để trống!'}]}>
-                    <Input placeholder='' type={'password'} />
-                  </FormItem>
-                </div>
-                <div className='col-xl-12 col-lg-12'>
-                  <FormItem
-                    label='Mật khẩu mới'
-                    name='newPassword'
-                    rules={[
-                      {required: true, message: 'Không được để trống!'},
-                      {
-                        pattern: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,18}$/,
-                        message: 'Mật khẩu từ 6-18 ký tự, gồm có: chữ hoa hoặc chữ thường hoặc số và các ký tự đặc biệt! Vui lòng kiểm tra lại!',
-                      },
-                    ]}
-                  >
-                    <Input placeholder='' type={'password'} />
-                  </FormItem>
-                </div>
-                <div className='col-xl-12 col-lg-12'>
-                  <FormItem
-                    label='Nhập lại mật khẩu mới'
-                    name='confirmNewPassword'
-                    rules={[
-                      {required: true, message: 'Không được để trống!'},
-                      {
-                        pattern: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,18}$/,
-                        message: 'Mật khẩu từ 6-18 ký tự, gồm có: chữ hoa hoặc chữ thường và các ký tự đặc biệt! Vui lòng kiểm tra lại!',
-                      },
-                      ({getFieldValue}) => ({
-                        validator(rule, value) {
-                          if (!value || getFieldValue('newPassword') === value) {
-                            return Promise.resolve();
-                          }
-                          return Promise.reject('Nhập lại mật khẩu không khớp với mật khẩu mới!');
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input placeholder='' type={'password'} />
-                  </FormItem>
-                </div>
-              </div>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer className='bg-light px-4 py-2 align-items-center'>
-            <div className='d-flex justify-content-center  align-items-center'>
-              <Button className='btn-sm btn-primary rounded-1 p-2  ms-2' onClick={onFinish}>
-                <i className='fa fa-save'></i>
-                {'Đổi mật khẩu'}
-              </Button>
-            </div>
-            <div className='d-flex justify-content-center  align-items-center'>
-              <Button className='btn-sm btn-secondary rounded-1 p-2  ms-2' onClick={handleCancel}>
-                <i className='fa fa-times'></i>Huỷ
-              </Button>
-            </div>
-          </Modal.Footer>
-        </Modal>
-      ) : (
-        <></>
-      )}
     </>
   );
 };

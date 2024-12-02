@@ -1,15 +1,15 @@
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 // Axios
-import { PersistGate } from 'redux-persist/integration/react';
-import { Provider } from 'react-redux';
-import store, { persistor } from './setup/redux/Store';
+import {PersistGate} from 'redux-persist/integration/react';
+import {Provider} from 'react-redux';
+import store, {persistor} from './setup/redux/Store';
 
 import axios from 'axios';
-import { Chart, registerables } from 'chart.js';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import {Chart, registerables} from 'chart.js';
+import {QueryClient, QueryClientProvider} from 'react-query';
+import {ReactQueryDevtools} from 'react-query/devtools';
 // Apps
-import { MetronicI18nProvider } from './_metronic/i18n/Metronici18n';
+import {MetronicI18nProvider} from './_metronic/i18n/Metronici18n';
 /**
  * TIP: Replace this style import with rtl styles to enable rtl mode
  *
@@ -20,9 +20,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import './_metronic/assets/sass/style.scss';
 import './_metronic/assets/sass/plugins.scss';
 import './_metronic/assets/sass/style.react.scss';
-import { AppRoutes } from './app/routing/AppRoutes';
-import { AuthProvider, setupAxios } from './app/modules/auth';
-import { ConfigProvider } from 'antd';
+import {AppRoutes} from './app/routing/AppRoutes';
+import {AuthProvider, setupAxios} from './app/modules/auth';
+import {ConfigProvider} from 'antd';
 import locale from 'antd/lib/locale/vi_VN';
 /**
  * Creates `axios-mock-adapter` instance for provided `axios` instance, add

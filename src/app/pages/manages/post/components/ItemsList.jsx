@@ -77,6 +77,10 @@ const UsersList = (props) => {
       case 'chi-tiet':
         navigate(`/manage/owner/viewpost/${item?.id}`);
         break;
+      case 'hop-dong':
+        dispatch(actionsModal.setDataModal(item));
+        dispatch(actionsModal.setModalVisible(true));
+        break;
       case 'delete':
         var res = await requestDELETE(`api/v1/motels/${item.id}`);
         if (res) {
@@ -176,18 +180,18 @@ const UsersList = (props) => {
             >
               <i className='fa fa-eye'></i>
             </a>
-            {record.status === 'Chưa thuê' && (
-              <a
-                className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 mb-1'
-                data-toggle='m-tooltip'
-                title='Hợp đồng cho thuê'
-                onClick={() => {
-                  handleButton(`hop-dong`, record);
-                }}
-              >
-                <i className='fa-solid fa-file-contract'></i>
-              </a>
-            )}
+
+            <a
+              className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 mb-1'
+              data-toggle='m-tooltip'
+              title='Hợp đồng cho thuê'
+              onClick={() => {
+                handleButton(`hop-dong`, record);
+              }}
+            >
+              <i className='fa-solid fa-file-contract'></i>
+            </a>
+
             <Popconfirm
               title='Xoá?'
               onConfirm={() => {

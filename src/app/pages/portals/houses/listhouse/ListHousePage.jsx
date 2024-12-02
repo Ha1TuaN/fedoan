@@ -33,6 +33,8 @@ function ListHousePage() {
   const [size, setSize] = useState(10);
   const [count, setCount] = useState('');
   const [offset, setOffset] = useState(1);
+
+  const [orderBy, setOrderBy] = useState('createdOn DESC');
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -51,7 +53,7 @@ function ListHousePage() {
             type: type,
             provinceId: provinceId,
             districtId: districtId,
-            orderBy: ['createdOn DESC'],
+            orderBy: [`${orderBy}`],
           })
         );
         setData(res.data ?? []);
@@ -65,7 +67,7 @@ function ListHousePage() {
     };
 
     fetchData();
-  }, [priceRange, areaRange, type, districtId, provinceId]);
+  }, [priceRange, areaRange, type, districtId, provinceId, orderBy]);
   return (
     <>
       <div className='row'>
@@ -86,17 +88,23 @@ function ListHousePage() {
             <div className='col-12'>
               <div className='card card-custom card-px-0'>
                 <div className='card-body'>
-                  <div className='d-flex align-items-center'>
+                  <div className='d-flex align-items-center '>
                     <h6 className='fs-7 mt-1 me-3'>Sắp xếp theo:</h6>
                     <Radio.Group
                       block
+                      className='w-450px'
                       options={[
-                        {label: 'Mới nhất', value: 'new'},
-                        {label: 'Giá thấp đến cao', value: 'gia'},
-                        {label: 'Pear', value: 'Pear'},
-                        {label: 'Orange', value: 'Orange'},
+                        {label: 'Mới nhất', value: 'createdOn DESC'},
+                        {label: 'Giá thấp đến cao', value: 'price ASC'},
+                        {label: 'Giá cao đến thấp', value: 'price DESC'},
                       ]}
-                      defaultValue='gia'
+                      defaultValue='createdOn DESC'
+                      onChange={(e) => {
+                        console.log(e);
+                        if (e.target.checked) {
+                          setOrderBy(e.target.value);
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -110,6 +118,7 @@ function ListHousePage() {
                   <List.Item>
                     <Card
                       hoverable
+                      className='card-item'
                       style={{
                         width: '100%',
                         padding: 0,

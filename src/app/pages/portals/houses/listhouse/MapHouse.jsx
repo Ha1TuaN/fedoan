@@ -1,45 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api'; // Đảm bảo nhập đúng
+import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api';
 import {Cascader, Spin, notification} from 'antd';
 import {requestPOST} from 'src/utils/baseAPI';
 import _ from 'lodash';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux'; // Import useSelector
 import * as action from '../../../../../setup/redux/filter/Actions';
-
-const fetchAreas = async () => {
-  try {
-    const res = await requestPOST('api/v1/areas/search', {
-      advancedSearch: {
-        fields: ['name', 'shortName', 'code'],
-        keyword: null,
-      },
-      pageNumber: 1,
-      pageSize: 1000,
-      level: 1,
-      orderBy: ['code ASC'],
-    });
-
-    return res.data.map((item) => ({
-      ...item,
-      value: item.id,
-      label: item.name,
-      children: item.children.map((i) => ({
-        ...i,
-        value: i.id,
-        label: i.name,
-      })),
-    }));
-  } catch (error) {
-    notification.error({
-      message: 'Error',
-      description: 'Failed to load areas. Please try again later.',
-    });
-    throw error;
-  }
-};
 
 const MapHouse = ({locations}) => {
   const dispatch = useDispatch();
+
+  // Lấy giá trị từ Redux store
+  const provinceId = useSelector((state) => state.filter.provinceId);
+  const districtId = useSelector((state) => state.filter.districtId);
+
   const [areas, setAreas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [place, setPlace] = useState({lat: 21.0285, lng: 105.8542});
@@ -61,7 +34,37 @@ const MapHouse = ({locations}) => {
   };
 
   const center = calculateCenter();
+  const fetchAreas = async () => {
+    try {
+      const res = await requestPOST('api/v1/areas/search', {
+        advancedSearch: {
+          fields: ['name', 'shortName', 'code'],
+          keyword: null,
+        },
+        pageNumber: 1,
+        pageSize: 1000,
+        level: 1,
+        orderBy: ['code ASC'],
+      });
 
+      return res.data.map((item) => ({
+        ...item,
+        value: item.id,
+        label: item.name,
+        children: item.children.map((i) => ({
+          ...i,
+          value: i.id,
+          label: i.name,
+        })),
+      }));
+    } catch (error) {
+      notification.error({
+        message: 'Error',
+        description: 'Failed to load areas. Please try again later.',
+      });
+      throw error;
+    }
+  };
   useEffect(() => {
     const loadAreas = async () => {
       setLoading(true);
@@ -111,6 +114,7 @@ const MapHouse = ({locations}) => {
           expandTrigger='hover'
           displayRender={displayRender}
           onChange={handleCascaderChange}
+          value={[provinceId, districtId]} // Gắn giá trị Redux vào đây
           placeholder='Tìm theo khu vực'
           style={{width: '100%', marginBottom: '10px'}}
         />

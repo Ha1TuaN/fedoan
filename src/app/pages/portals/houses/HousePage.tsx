@@ -1,6 +1,7 @@
 import {Navigate, Route, Routes, Outlet} from 'react-router-dom';
 import ListHousePage from './listhouse/ListHousePage';
 import DetailHouse from './listhouse/DetailHouse';
+import DashboardCustomer from '../dashboard/DashboardCustomer';
 const HousePage = () => {
   return (
     <Routes>
@@ -23,7 +24,7 @@ const HousePage = () => {
         />
 
         <Route path='*' element={<Navigate to='/error/404' />} />
-        <Route index element={<Navigate to='/house/listhouse' />} />
+        <Route index element={<DashboardCustomer />} />
       </Route>
     </Routes>
   );

@@ -27,89 +27,7 @@ moment.locale('vi');
 
 const {Search} = Input;
 
-const RecursiveParent = ({parent, data, maDonVi}) => {
-  const location = useLocation();
-  const {pathname} = location;
-  const {currentUser, currentPermissions} = useAuth();
-
-  return (
-    <Menu
-      mode='horizontal'
-      className='py-0'
-      items={[
-        {
-          key: 'motel',
-          disabled: false,
-          label: (
-            <Link
-              to={`/customer/motel`}
-              className={clsx('', {
-                active: checkIsActive(pathname, '/customer/motel'),
-              })}
-            >
-              Nhà trọ
-            </Link>
-          ),
-        },
-        {
-          key: 'house',
-          disabled: false,
-          label: (
-            <Link
-              to={`/customer/house`}
-              className={clsx('', {
-                active: checkIsActive(pathname, '/customer/house'),
-              })}
-            >
-              Nhà nguyên căn
-            </Link>
-          ),
-        },
-        {
-          key: 'apartment',
-          disabled: false,
-          label: (
-            <Link
-              to={`/customer/apartment`}
-              className={clsx('', {
-                active: checkIsActive(pathname, '/customer/apartment'),
-              })}
-            >
-              Chung cư
-            </Link>
-          ),
-        },
-        {
-          key: 'mimiapartment',
-          disabled: false,
-          label: (
-            <Link
-              to={`/customer/mimiapartment`}
-              className={clsx('', {
-                active: checkIsActive(pathname, '/customer/mimiapartment'),
-              })}
-            >
-              Chung cư mini
-            </Link>
-          ),
-        },
-      ]}
-    ></Menu>
-  );
-};
-
 const MasterLayout = () => {
-  const dataImage = [
-    {
-      image: 'https://sotaydangvien.hanoi.dcs.vn/TaiLieu/LichCongTac/2022-10/Congbao.jpg',
-      link: 'https://www.hanoi.gov.vn/',
-    },
-    {
-      image: 'https://sotaydangvien.hanoi.dcs.vn/TaiLieu/LichCongTac/2022-10/mail.jpg',
-      link: 'https://sso.thudo.gov.vn/sso/login#!login',
-    },
-  ];
-
   const location = useLocation();
   useEffect(() => {
     reInitMenu();
@@ -117,41 +35,8 @@ const MasterLayout = () => {
   const navigate = useNavigate();
   const {currentUser, logout} = useAuth();
 
-  const marqueeInnerWidth = useRef(null);
-
-  const [dataNotify, setDataNotify] = useState([]);
   const {pathname} = location;
-  const [selectedLienKetWeb, setSelectedLienKetWeb] = useState('');
 
-  const [linkWebsite, setLinkWebsite] = useState([]);
-  const [linkImgae, setLinkImage] = useState([]);
-
-  const onSearch = (values) => {
-    navigate(`/search?keyword=${values}`);
-  };
-
-  const onChagneLienKetWeb = (value) => {
-    setSelectedLienKetWeb(value);
-    if (value) {
-      window.open(value, '_blank').focus();
-      setSelectedLienKetWeb('');
-    }
-  };
-  // <Navbar bg='transparent' variant='dark' expand='lg' className='headerNav p-0 mw-100'>
-
-  //                     <Navbar.Collapse id='basic-navbar-nav' className='w-100 mw-100 show'>
-  //                       <Nav className='w-100 mw-100'>
-  //                         <RecursiveParent parent data={[]} maDonVi={123} />
-  //                       </Nav>
-  //                     </Navbar.Collapse>
-  //                   </Navbar>  <Navbar bg='transparent' variant='dark' expand='lg' className='headerNav p-0 mw-100'>
-
-  //                     <Navbar.Collapse id='basic-navbar-nav' className='w-100 mw-100 show'>
-  //                       <Nav className='w-100 mw-100'>
-  //                         <RecursiveParent parent data={[]} maDonVi={123} />
-  //                       </Nav>
-  //                     </Navbar.Collapse>
-  //                   </Navbar>
   return (
     <PageDataProvider>
       <ThemeModeProvider>
@@ -217,7 +102,14 @@ const MasterLayout = () => {
                               </Button>
                             </Dropdown>
                           ) : (
-                            <Button onClick={() => navigate('/auth')} ghost icon={<LoginOutlined />}>
+                            <Button
+                              onClick={() => {
+                                debugger;
+                                navigate('/auth');
+                              }}
+                              ghost
+                              icon={<LoginOutlined />}
+                            >
                               Đăng nhập
                             </Button>
                           )}
@@ -270,7 +162,6 @@ const MasterLayout = () => {
                                   label: (
                                     <a
                                       onClick={() => {
-                                        console.log('....');
                                         navigate(`/manage/owner/createpost`);
                                       }}
                                     >
@@ -311,12 +202,25 @@ const MasterLayout = () => {
               </div>
             )}
             {/*end::Header*/}
-
-            <div className='wrapper-content py-6'>
-              <Content>
-                <Outlet />
-              </Content>
-            </div>
+            {pathname == '/' ? (
+              <div className='container content-div'>
+                <div className='row portal-content'>
+                  <div className='col-md-12 col-12' id='content-main'>
+                    {/* <Toolbar /> */}
+                    {/* <ToolbarHeadSearch /> */}
+                    <Content>
+                      <Outlet />
+                    </Content>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className='wrapper-content py-6'>
+                <Content>
+                  <Outlet />
+                </Content>
+              </div>
+            )}
             <FooterWrapper />
           </div>
         </div>

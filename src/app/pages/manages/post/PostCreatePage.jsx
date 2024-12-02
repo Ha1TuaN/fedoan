@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {Divider, Form, Select, Input, InputNumber, Button} from 'antd';
+import {Divider, Form, Select, Input, InputNumber, Button, Checkbox} from 'antd';
 import * as actionsModal from 'src/setup/redux/modal/Actions';
 
 import {toast} from 'react-toastify';
@@ -15,6 +15,7 @@ import HeaderTitle from '../../../components/HeaderTitle';
 import {useAuth} from '../../../../app/modules/auth';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {Col, Row} from 'react-bootstrap';
 
 const FormItem = Form.Item;
 
@@ -330,6 +331,7 @@ const PostCreatePage = () => {
                 </div>
               </div>
             </div>
+
             <div className='card card-body p-5 my-3'>
               <div className='p-5'>
                 <HeaderTitle title={'HÌNH ẢNH'} />

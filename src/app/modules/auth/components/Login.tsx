@@ -52,28 +52,15 @@ export function Login() {
 
   return (
     <form className='form w-100' onSubmit={formik.handleSubmit} noValidate id='kt_login_signin_form'>
-      {/* begin::Heading */}
-      <div className='text-center mb-11'>
-        <h1 className='text-dark fw-bolder mb-3'>PHẦN MỀM QUẢN LÝ</h1>
-        <h1 className='text-dark fw-bolder mb-3'>NHIỆM VỤ KHOA HỌC</h1>
-
-        {/* <h1 className='text-dark fw-bolder mb-3'>Đăng nhập</h1> */}
+      <div className='p-8 rounded d-flex justify-content-center'>
+        <div className='text-info'>
+          <img src={toAbsoluteUrl('/media/logos/logo.svg')} alt='' />
+        </div>
       </div>
-      {/* begin::Heading */}
-
-      {formik.status ? (
-        <div className='mb-lg-15 alert alert-danger'>
-          <div className='alert-text font-weight-bold'>{formik.status}</div>
-        </div>
-      ) : (
-        <div className='mb-10 bg-light-info p-8 rounded'>
-          <div className='text-info'></div>
-        </div>
-      )}
 
       {/* begin::Form group */}
       <div className='fv-row mb-8'>
-        <label className='form-label fs-6 fw-bolder text-dark'>Tài khoản</label>
+        <label className='form-label fs-6 fw-bolder text-light'>Tài khoản</label>
         <input
           placeholder='Tài khoản'
           {...formik.getFieldProps('userName')}
@@ -98,7 +85,7 @@ export function Login() {
 
       {/* begin::Form group */}
       <div className='fv-row mb-3'>
-        <label className='form-label fw-bolder text-dark fs-6 mb-0'>Mật khẩu</label>
+        <label className='form-label fw-bolder text-light fs-6 mb-0'>Mật khẩu</label>
         <input
           type='password'
           placeholder='Mật khẩu'
@@ -127,10 +114,9 @@ export function Login() {
       {/* begin::Wrapper */}
       <div className='d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8'>
         <div />
-
         {/* begin::Link */}
-        <Link to='/auth/forgot-password' className='link-primary'>
-          Quên mật khẩu ?
+        <Link to='/auth/registration' className='link-light text-hover-muted'>
+          Đăng ký
         </Link>
         {/* end::Link */}
       </div>

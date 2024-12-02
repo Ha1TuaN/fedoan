@@ -1,10 +1,3 @@
-/**
- * High level router.
- *
- * Note: It's recommended to compose related routes in internal router
- * components (e.g: `src/app/modules/Auth/pages/AuthPage`, `src/app/BasePage`).
- */
-
 import {FC} from 'react';
 import {Routes, Route, BrowserRouter, Navigate} from 'react-router-dom';
 import {PrivateRoutes} from './PrivateRoutes';
@@ -13,17 +6,13 @@ import {Logout, AuthPage, useAuth} from '../modules/auth';
 import {App} from '../App';
 import {PortalRoutes} from './PortalRoutes';
 
-/**
- * Base URL of the website.
- *
- * @see https://facebook.github.io/create-react-app/docs/using-the-public-folder
- */
 const {PUBLIC_URL} = process.env;
 
 const AppRoutes: FC = () => {
   const {currentUser} = useAuth();
+
   return (
-    <BrowserRouter basename={PUBLIC_URL}>
+    <BrowserRouter basename={PUBLIC_URL || ''}>
       <Routes>
         <Route element={<App />}>
           <Route path='error/*' element={<ErrorsPage />} />
@@ -32,16 +21,19 @@ const AppRoutes: FC = () => {
 
           {currentUser ? (
             <>
+              {/* Các route dành cho người dùng đã đăng nhập */}
               <Route path='manage/*' element={<PrivateRoutes />} />
               <Route path='auth/*' element={<Navigate to='/' />} />
             </>
           ) : (
             <>
-              <Route path='/*' element={<PortalRoutes />} />
+              {/* Các route dành cho người dùng chưa đăng nhập */}
               <Route path='auth/*' element={<AuthPage />} />
             </>
           )}
-          <Route path='*' element={<Navigate to='/auth' />} />
+
+          {/* Fallback route cho các đường dẫn không hợp lệ */}
+          <Route path='*' element={<Navigate to={currentUser ? '/' : '/auth/login'} />} />
         </Route>
       </Routes>
     </BrowserRouter>

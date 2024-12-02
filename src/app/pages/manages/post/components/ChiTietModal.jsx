@@ -1,22 +1,18 @@
-import {useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import React, {useState, useEffect, useRef} from 'react';
+import {shallowEqual, useSelector, useDispatch} from 'react-redux';
 
-import {Form, Input, Spin, DatePicker, Divider} from 'antd';
+import {Form, Input, Select, Spin, Checkbox, InputNumber, DatePicker} from 'antd';
 import {Modal, Button} from 'react-bootstrap';
 import {toast} from 'react-toastify';
 import _ from 'lodash';
-
-import * as actionsModal from 'src/setup/redux/modal/Actions';
-import TDSelect from 'src/app/components/TDSelect';
-import {requestPOST, requestGET, requestPOST_NEW, requestPUT_NEW} from 'src/utils/baseAPI';
-import locale from 'antd/es/date-picker/locale/vi_VN';
-import {validatePhoneNumber} from 'src/utils/utils';
-import moment from 'moment';
 import dayjs from 'dayjs';
+import * as actionsModal from 'src/setup/redux/modal/Actions';
+import {requestPOST, requestGET, requestPOST_NEW, requestPUT_NEW, API_URL} from 'src/utils/baseAPI';
+import {removeAccents} from 'src/utils/slug';
+import TextArea from 'antd/es/input/TextArea';
+import ImageUpload from '../../../../components/FileUpload';
 
 const FormItem = Form.Item;
-
-const {TextArea} = Input;
 
 const ModalItem = (props) => {
   const dispatch = useDispatch();
@@ -27,70 +23,60 @@ const ModalItem = (props) => {
 
   const [form] = Form.useForm();
 
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState('');
+  const [loadding, setLoadding] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
-  const [isContracting, setIsContracting] = useState(null);
 
+  const [file, setFile] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const res = await requestGET(`api/v1/reportgenerals/${id}`);
-
+      setLoadding(true);
+      const res = await requestPOST(
+        `api/v1/customers/search`,
+        _.assign({
+          advancedSearch: {
+            fields: ['name'],
+            keyword: null,
+          },
+          pageNumber: 1,
+          pageSize: 10000,
+          motelId: id,
+          orderBy: ['createdOn DESC'],
+        })
+      );
       if (res && res.data) {
-        var _obj = res.data;
-        _obj.reportDate = _obj.reportDate ? dayjs(_obj.reportDate) : null;
+        var _obj = res.data[0];
+        _obj.startDate = _obj.startDate ? dayjs(_obj.startDate) : null;
+        _obj.endDate = _obj.endDate ? dayjs(_obj.endDate) : null;
         form.setFieldsValue(_obj);
-        setStatus(_obj.status);
       }
-      setLoading(false);
+      setLoadding(false);
     };
-    if (id) {
-      fetchData();
-    }
+
+    fetchData();
+
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, []);
 
   const handleCancel = () => {
     form.resetFields();
+    /*  props.setDataModal(null);
+    props.setModalVisible(false); */
     dispatch(actionsModal.setModalVisible(false));
   };
 
-  // const onFinish = async () => {
-  //   const values = await form.validateFields();
-  //   setBtnLoading(true);
-  //   try {
-  //     const formData = form.getFieldsValue(true);
-  //     if (id) {
-  //       formData.id = id;
-  //     }
-  //     const res = id ? await requestPUT_NEW(`api/v1/reportgenerals/${id}`, formData) : await requestPOST_NEW(`api/v1/reportgenerals`, formData);
+  const onFinish = async () => {
+    const values = await form.validateFields();
+    setBtnLoading(true);
+    try {
+      const formData = form.getFieldsValue(true);
+      // if (id) {
+      //   formData.id = id;
+      // }
+      formData.motelId = id;
+      //id ? await requestPUT_NEW(`api/v1/customers/${id}`, formData) :
+      const res = await requestPOST_NEW(`api/v1/customers`, formData);
 
-  //     if (res.status === 200) {
-  //       toast.success('Cập nhật thành công!');
-  //       dispatch(actionsModal.setRandom());
-  //       handleCancel();
-  //     } else {
-  //       //toast.error('Thất bại, vui lòng thử lại!');
-  //       const errors = Object.values(res?.data?.errors ?? {});
-  //       let final_arr = [];
-  //       errors.forEach((item) => {
-  //         final_arr = _.concat(final_arr, item);
-  //       });
-  //       toast.error('Thất bại, vui lòng thử lại! ' + final_arr.join(' '));
-  //     }
-  //   } catch (errorInfo) {
-  //     console.log('Failed:', errorInfo);
-  //   }
-  //   setBtnLoading(false);
-  // };
-  const handleApprove = async (x) => {
-    if (x === 'Approve') {
-      const res = await requestPUT_NEW(`api/v1/reportgenerals/approve/${id}`, {
-        id: id,
-        status: 'Phê duyệt báo cáo',
-      });
       if (res.status === 200) {
         toast.success('Cập nhật thành công!');
         dispatch(actionsModal.setRandom());
@@ -104,30 +90,16 @@ const ModalItem = (props) => {
         });
         toast.error('Thất bại, vui lòng thử lại! ' + final_arr.join(' '));
       }
-    } else if (x === 'Not Approve') {
-      const res = await requestPUT_NEW(`api/v1/reportgenerals/approve/${id}`, {
-        id: id,
-        status: 'Từ chối phê duyệt báo cáo',
-      });
-      if (res.status === 200) {
-        toast.success('Cập nhật thành công!');
-        dispatch(actionsModal.setRandom());
-        handleCancel();
-      } else {
-        //toast.error('Thất bại, vui lòng thử lại!');
-        const errors = Object.values(res?.data?.errors ?? {});
-        let final_arr = [];
-        errors.forEach((item) => {
-          final_arr = _.concat(final_arr, item);
-        });
-        toast.error('Thất bại, vui lòng thử lại! ' + final_arr.join(' '));
-      }
+    } catch (errorInfo) {
+      console.log('Failed:', errorInfo);
     }
+    setBtnLoading(false);
   };
+
   return (
     <Modal
       show={modalVisible}
-      fullscreen={'xl-down'}
+      fullscreen={'lg-down'}
       size='xl'
       onExited={handleCancel}
       keyboard={true}
@@ -135,47 +107,49 @@ const ModalItem = (props) => {
       onEscapeKeyDown={handleCancel}
     >
       <Modal.Header className='bg-primary px-4 py-3'>
-        <Modal.Title className='text-white'>Chi tiết</Modal.Title>
+        <Modal.Title className='text-white'>Hợp đồng cho thuê</Modal.Title>
         <button type='button' className='btn-close btn-close-white' aria-label='Close' onClick={handleCancel}></button>
       </Modal.Header>
       <Modal.Body>
-        <Spin spinning={loading}>
-          {!loading && (
-            <Form form={form} layout='vertical' autoComplete='off'>
+        <Spin spinning={loadding}>
+          {!loadding && (
+            <Form form={form} layout='vertical' /* initialValues={initData} */ autoComplete='off'>
               <div className='row'>
                 <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Tên kế hoạch' name='name' rules={[{required: true, message: 'Không được để trống!'}]}>
+                  <FormItem label='Họ tên' name='name' rules={[{required: true, message: 'Không được để trống!'}]}>
                     <Input placeholder='' />
                   </FormItem>
                 </div>
                 <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Người thực hiện' name='executor' rules={[{required: true, message: 'Không được để trống!'}]}>
+                  <FormItem label='Số điện thoại' name='phoneNumber'>
                     <Input placeholder='' />
                   </FormItem>
                 </div>
+
                 <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Kết quả ' name='result'>
-                    <Input placeholder='' />
+                  <FormItem label='Ngày bắt đầu thuê nhà' name='startDate'>
+                    <DatePicker style={{width: '100%'}} format='DD/MM/YYYY' />
                   </FormItem>
                 </div>
                 <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Đánh giá' name='evaluation'>
-                    <Input placeholder='' />
+                  <FormItem label='Ngày kết thúc thuê nhà' name='endDate'>
+                    <DatePicker style={{width: '100%'}} format='DD/MM/YYYY' />
                   </FormItem>
                 </div>
-                <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Mô tả' name='description'>
-                    <TextArea placeholder='' />
-                  </FormItem>
-                </div>
-                <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Ngày báo cáo' name='reportDate'>
-                    <DatePicker placeholder='Chọn ngày' locale={locale} style={{width: '100%'}} format={'DD/MM/YYYY'} />
-                  </FormItem>
-                </div>
-                <div className='col-xl-6 col-lg-6'>
-                  <FormItem label='Ghi chú' name='note'>
-                    <TextArea placeholder='' />
+                <div className='col-xl-12 col-lg-12'>
+                  <FormItem label='Đính kèm hợp đồng thuê nhà (nếu có)' name='file'>
+                    <ImageUpload
+                      multiple={true}
+                      URL={`${API_URL}/api/fileupload`}
+                      // headers={{
+                      //     Authorization: `Bearer ${token}`,
+                      // }}
+                      fileList={file}
+                      onChange={(e) => {
+                        setFile(e.fileList);
+                        console.log(e?.file?.response ?? null);
+                      }}
+                    />
                   </FormItem>
                 </div>
               </div>
@@ -185,18 +159,14 @@ const ModalItem = (props) => {
       </Modal.Body>
       <Modal.Footer className='bg-light px-4 py-2 align-items-center'>
         <div className='d-flex justify-content-center  align-items-center'>
-          {status === 'Đang xử lý' && (
-            <>
-              <Button className='btn-sm btn-primary rounded-1 p-2 ms-2' onClick={() => handleApprove('Approve')}>
-                <i className='fa fa-times me-2'></i>Phê duyệt
-              </Button>
-              <Button className='btn-sm btn-danger rounded-1 p-2 ms-2' onClick={() => handleApprove('Not Approve')}>
-                <i className='fa fa-times me-2'></i>Từ chối phê duyệt
-              </Button>
-            </>
-          )}
+          <Button className='btn-sm btn-primary rounded-1 py-2 px-5  ms-2' onClick={onFinish} disabled={btnLoading}>
+            <i className='fa fa-save'></i>
+            {id ? 'Lưu' : 'Tạo mới'}
+          </Button>
+        </div>
+        <div className='d-flex justify-content-center  align-items-center'>
           <Button className='btn-sm btn-secondary rounded-1 p-2  ms-2' onClick={handleCancel}>
-            <i className='fa fa-times me-2'></i>Đóng
+            <i className='fa fa-times'></i>Đóng
           </Button>
         </div>
       </Modal.Footer>

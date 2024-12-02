@@ -7,12 +7,13 @@ import {requestPOST, requestGET} from 'src/utils/baseAPI';
 
 import {Card, List} from 'antd';
 import './HomeWrapper.scss';
+import DashboardCustomer from '../dashboard/DashboardCustomer';
 export const API_URL = process.env.REACT_APP_API_URL;
 
 const wizardsBreadCrumbs = [
   {
     title: 'Trang chủ',
-    path: '/portal/sciencetask/registrationschedules',
+    path: '/',
     isSeparator: false,
     isActive: true,
   },
@@ -32,7 +33,9 @@ const HomeWrapper = () => {
   return (
     <>
       <PageTitle breadcrumbs={wizardsBreadCrumbs}>Trang chủ</PageTitle>
-      <div className='container '></div>
+      <div className='container '>
+        <DashboardCustomer />
+      </div>
     </>
   );
 };
