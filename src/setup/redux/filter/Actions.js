@@ -20,3 +20,10 @@ export const setDistrictId = (data) => (dispatch) => {
 export const setProvinceId = (data) => (dispatch) => {
   dispatch(actions.setProvinceId(data));
 };
+
+export const setBedRoomCount = (data) => (dispatch) => {
+  dispatch(actions.setBedRoomCount(data));
+};
+export const setBathRoomCount = (data) => (dispatch) => {
+  dispatch(actions.setBathRoomCount(data));
+};

@@ -28,6 +28,8 @@ function ListHousePage() {
   const type = useSelector((state) => state.filter.type);
   const districtId = useSelector((state) => state.filter.districtId);
   const provinceId = useSelector((state) => state.filter.provinceId);
+  const bathroomCount = useSelector((state) => state.filter.bathroomCount);
+  const bedroomCount = useSelector((state) => state.filter.bedroomCount);
 
   const [loading, setLoading] = useState(false);
   const [size, setSize] = useState(10);
@@ -53,6 +55,9 @@ function ListHousePage() {
             type: type,
             provinceId: provinceId,
             districtId: districtId,
+            bedroomCount: bedroomCount,
+            bathroomCount: bathroomCount,
+            status: 'Chưa thuê',
             orderBy: [`${orderBy}`],
           })
         );
@@ -67,7 +72,7 @@ function ListHousePage() {
     };
 
     fetchData();
-  }, [priceRange, areaRange, type, districtId, provinceId, orderBy]);
+  }, [priceRange, areaRange, type, districtId, provinceId, bedroomCount, bathroomCount, orderBy]);
   return (
     <>
       <div className='row'>
@@ -114,6 +119,12 @@ function ListHousePage() {
               <List
                 grid={{gutter: 16, column: 4}}
                 dataSource={data}
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 12,
+                }}
                 renderItem={(item) => (
                   <List.Item>
                     <Card

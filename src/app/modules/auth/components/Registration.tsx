@@ -5,46 +5,55 @@ import {useFormik} from 'formik';
 import * as Yup from 'yup';
 import clsx from 'clsx';
 import {getUserByToken, register} from '../core/_requests';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {toAbsoluteUrl} from '../../../../_metronic/helpers';
 import {PasswordMeterComponent} from '../../../../_metronic/assets/ts/components';
 import {useAuth} from '../core/Auth';
 
 const initialValues = {
   fullName: '',
-  lastname: '',
   phoneNumber: '',
+  userName: '',
+  email: '',
   password: '',
-  changepassword: '',
+  confirmPassword: '',
   acceptTerms: false,
 };
 
 const registrationSchema = Yup.object().shape({
-  fullName: Yup.string().min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Họ tên is required'),
+  fullName: Yup.string().min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Họ tên là trường bắt buộc'),
+  email: Yup.string().email('Wrong email format').min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Email là trường bắt buộc'),
   phoneNumber: Yup.string()
-    .matches(/^[0-9]{10,15}$/, 'Phone number is not valid')
-    .required('Phone number is required'),
-  lastname: Yup.string().min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Last name is required'),
-  password: Yup.string().min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Password is required'),
-  changepassword: Yup.string()
-    .required('Password confirmation is required')
-    .oneOf([Yup.ref('password')], "Password and Confirm Password didn't match"),
-  acceptTerms: Yup.bool().oneOf([true], 'You must accept the terms and conditions'),
+    .matches(/^[0-9]{10,15}$/, 'Số điện thoại không hợp lệ')
+    .required('Số điện thoại là trường bắt buộc'),
+  userName: Yup.string().min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Tên đăng nhập là trường bắt buộc'),
+  password: Yup.string().min(3, 'Minimum 3 symbols').max(50, 'Maximum 50 symbols').required('Mật khẩu là trường bắt buộc'),
+  confirmPassword: Yup.string()
+    .required('Nhập lại mật khẩu là trường bắt buộc')
+    .oneOf([Yup.ref('password')], 'Mật khẩu và Nhập lại mật khẩu không khớp'),
+  acceptTerms: Yup.bool().oneOf([true], 'Bạn phải chấp nhận các điều khoản và điều kiện'),
 });
 
 export function Registration() {
   const [loading, setLoading] = useState(false);
   const {saveAuth, setCurrentUser} = useAuth();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues,
     validationSchema: registrationSchema,
     onSubmit: async (values, {setStatus, setSubmitting}) => {
       setLoading(true);
       try {
-        const {data: auth} = await register(values.phoneNumber, values.fullName, values.password, values.changepassword);
+        const {data: auth} = await register(
+          values.fullName,
+          values.phoneNumber,
+          values.email,
+          values.userName,
+          values.password,
+          values.confirmPassword
+        );
         saveAuth(auth);
-        const {data: user} = await getUserByToken(auth.token);
-        setCurrentUser(user?.data);
+        navigate(-1);
       } catch (error) {
         console.error(error);
         saveAuth(undefined);
@@ -76,7 +85,7 @@ export function Registration() {
           autoComplete='off'
           {...formik.getFieldProps('fullName')}
           className={clsx(
-            'form-control bg-transparent',
+            'form-control bg-transparent text-white',
             {
               'is-invalid': formik.touched.fullName && formik.errors.fullName,
             },
@@ -104,7 +113,7 @@ export function Registration() {
           autoComplete='off'
           {...formik.getFieldProps('phoneNumber')}
           className={clsx(
-            'form-control bg-transparent',
+            'form-control bg-transparent text-white',
             {'is-invalid': formik.touched.phoneNumber && formik.errors.phoneNumber},
             {
               'is-valid': formik.touched.phoneNumber && !formik.errors.phoneNumber,
@@ -119,12 +128,57 @@ export function Registration() {
           </div>
         )}
       </div>
+      <div className='fv-row mb-8'>
+        <label className='form-label fw-bolder text-light fs-6'>Email</label>
+        <input
+          placeholder='Email'
+          type='email'
+          autoComplete='off'
+          {...formik.getFieldProps('email')}
+          className={clsx(
+            'form-control bg-transparent text-white',
+            {'is-invalid': formik.touched.email && formik.errors.email},
+            {
+              'is-valid': formik.touched.email && !formik.errors.email,
+            }
+          )}
+        />
+        {formik.touched.email && formik.errors.email && (
+          <div className='fv-plugins-message-container'>
+            <div className='fv-help-block'>
+              <span role='alert'>{formik.errors.email}</span>
+            </div>
+          </div>
+        )}
+      </div>
       {/* end::Form group */}
-
+      <div className='fv-row mb-8'>
+        <label className='form-label fw-bolder text-light fs-6'>Tên đăng nhập</label>
+        <input
+          placeholder='Tên đăng nhập'
+          type='userName'
+          autoComplete='off'
+          {...formik.getFieldProps('userName')}
+          className={clsx(
+            'form-control bg-transparent text-white',
+            {'is-invalid': formik.touched.userName && formik.errors.userName},
+            {
+              'is-valid': formik.touched.userName && !formik.errors.userName,
+            }
+          )}
+        />
+        {formik.touched.userName && formik.errors.userName && (
+          <div className='fv-plugins-message-container'>
+            <div className='fv-help-block'>
+              <span role='alert'>{formik.errors.userName}</span>
+            </div>
+          </div>
+        )}
+      </div>
       {/* begin::Form group Password */}
       <div className='fv-row mb-8' data-kt-password-meter='true'>
         <div className='mb-1'>
-          <label className='form-label fw-bolder text-light fs-6'>Password</label>
+          <label className='form-label fw-bolder text-light fs-6'>Mật khẩu</label>
           <div className='position-relative mb-3'>
             <input
               type='password'
@@ -132,7 +186,7 @@ export function Registration() {
               autoComplete='off'
               {...formik.getFieldProps('password')}
               className={clsx(
-                'form-control bg-transparent',
+                'form-control bg-transparent text-white',
                 {
                   'is-invalid': formik.touched.password && formik.errors.password,
                 },
@@ -158,32 +212,32 @@ export function Registration() {
           </div>
           {/* end::Meter */}
         </div>
-        <div className='text-muted'>Use 8 or more characters with a mix of letters, numbers & symbols.</div>
+        <div className='text-muted'>Sử dụng 8 ký tự trở lên với sự kết hợp của các chữ cái, số và ký hiệu.</div>
       </div>
       {/* end::Form group */}
 
       {/* begin::Form group Confirm password */}
       <div className='fv-row mb-5'>
-        <label className='form-label fw-bolder text-light fs-6'>Confirm Password</label>
+        <label className='form-label fw-bolder text-light fs-6'>Nhập lại mật khẩu</label>
         <input
           type='password'
           placeholder='Password confirmation'
           autoComplete='off'
-          {...formik.getFieldProps('changepassword')}
+          {...formik.getFieldProps('confirmPassword')}
           className={clsx(
-            'form-control bg-transparent',
+            'form-control bg-transparent text-white',
             {
-              'is-invalid': formik.touched.changepassword && formik.errors.changepassword,
+              'is-invalid': formik.touched.confirmPassword && formik.errors.confirmPassword,
             },
             {
-              'is-valid': formik.touched.changepassword && !formik.errors.changepassword,
+              'is-valid': formik.touched.confirmPassword && !formik.errors.confirmPassword,
             }
           )}
         />
-        {formik.touched.changepassword && formik.errors.changepassword && (
+        {formik.touched.confirmPassword && formik.errors.confirmPassword && (
           <div className='fv-plugins-message-container'>
             <div className='fv-help-block'>
-              <span role='alert'>{formik.errors.changepassword}</span>
+              <span role='alert'>{formik.errors.confirmPassword}</span>
             </div>
           </div>
         )}
@@ -194,10 +248,10 @@ export function Registration() {
       <div className='fv-row mb-8'>
         <label className='form-check form-check-inline' htmlFor='kt_login_toc_agree'>
           <input className='form-check-input' type='checkbox' id='kt_login_toc_agree' {...formik.getFieldProps('acceptTerms')} />
-          <span>
-            I Accept the{' '}
+          <span className='text-white'>
+            Chấp nhận
             <a href='https://keenthemes.com/metronic/?page=faq' target='_blank' className='ms-1 link-primary'>
-              Terms
+              Các điều khoản
             </a>
             .
           </span>

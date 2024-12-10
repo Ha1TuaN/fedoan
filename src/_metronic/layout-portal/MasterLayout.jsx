@@ -171,7 +171,15 @@ const MasterLayout = () => {
                                 },
                                 {
                                   key: 'managePost',
-                                  label: <a>Quản lý bài đăng</a>,
+                                  label: (
+                                    <a
+                                      onClick={() => {
+                                        navigate(`/manage/owner/post`);
+                                      }}
+                                    >
+                                      Quản lý bài đăng
+                                    </a>
+                                  ),
                                 },
                                 {
                                   key: 'log-out',

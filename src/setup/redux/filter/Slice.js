@@ -5,6 +5,8 @@ const initialState = {
   type: [],
   districtId: null,
   provinceId: null,
+  bedroomCount: [0, 10],
+  bathroomCount: [0, 10],
 };
 export const callTypes = {
   list: 'list',
@@ -29,6 +31,12 @@ export const filterSlice = createSlice({
     },
     setProvinceId: (state, action) => {
       state.provinceId = action.payload;
+    },
+    setBedRoomCount: (state, action) => {
+      state.bedroomCount = action.payload;
+    },
+    setBathRoomCount: (state, action) => {
+      state.bathroomCount = action.payload;
     },
   },
 });

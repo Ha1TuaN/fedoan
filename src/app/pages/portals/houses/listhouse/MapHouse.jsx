@@ -111,6 +111,7 @@ const MapHouse = ({locations}) => {
         <Cascader
           size='large'
           options={areas}
+          dropdownMenuColumnStyle={{minWidth: '500px', overflow: 'auto'}}
           expandTrigger='hover'
           displayRender={displayRender}
           onChange={handleCascaderChange}

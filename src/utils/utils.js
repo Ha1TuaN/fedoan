@@ -7,11 +7,31 @@ export const isUrl = (path) => reg.test(path);
 
 export const getPageQuery = () => URLSearchParams(window.location.href.split('?')[1]);
 
-export const convertImage = (array) => {
-  return array.map((item) => ({
-    image: item.response[0],
-  }));
+export const convertImage = (data) => {
+  return data.map((item) => {
+    if (item.response) {
+      // Dữ liệu từ upload
+      return {
+        name: item.name,
+        url: item.response[0], // Lấy URL từ response
+        uid: item.uid,
+      };
+    } else {
+      // Dữ liệu đã có sẵn URL
+      return {
+        name: item.name,
+        url: item.path || item.url, // Đảm bảo lấy đúng URL
+        uid: item.uid,
+      };
+    }
+  });
 };
+
+// export const convertImage = (array) => {
+//   return array.map((item) => ({
+//     image: item.response[0],
+//   }));
+// };
 export const handleImage2 = (array) => {
   const arr = array.map((item) => item.image);
   let res = [];

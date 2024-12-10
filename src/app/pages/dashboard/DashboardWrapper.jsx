@@ -6,11 +6,11 @@ import '../../../_metronic/assets/sass/style.dasboard.scss';
 import {Card, Col, Row} from 'antd';
 import EChart from './chart/EChart';
 import BieChart from './chart/BieChart';
-import CardDashboard from './Card/CardDashboard';
+import WidgetCard from './Card/WidgetCard';
 
 const DashboardPage = () => (
   <>
-    <CardDashboard />
+    <WidgetCard />
     <Row gutter={[24, 0]} className='mt-5'>
       <Col xs={24} sm={24} md={24} lg={18} xl={16} className='mb-24'>
         <EChart />

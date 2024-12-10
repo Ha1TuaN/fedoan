@@ -11,51 +11,9 @@ const FilterHouse = () => {
   const dispatch = useDispatch();
   const priceRange = useSelector((state) => state.filter.price);
   const areaRange = useSelector((state) => state.filter.area);
-
-  const [areaOptions, setAreaOptions] = useState([]);
-  //const [priceRange, setPriceRange] = useState([0, 100000000]);
-  const [loading, setLoading] = useState(false);
+  const bedroomCount = useSelector((state) => state.filter.bedroomCount);
+  const bathroomCount = useSelector((state) => state.filter.bathroomCount);
   const [form] = Form.useForm();
-
-  // Fetch Area Data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await requestPOST(
-          `api/v1/areas/search`,
-          _.assign({
-            advancedSearch: {
-              fields: ['name', 'shortName', 'code'],
-              keyword: null,
-            },
-            pageNumber: 1,
-            pageSize: 1000,
-            level: 1,
-            orderBy: ['code ASC'],
-          })
-        );
-        const data = res.data.map((item) => ({
-          ...item,
-          value: item.id,
-          label: item.name,
-          children: item.children.map((i) => ({
-            ...i,
-            value: i.id,
-            label: i.name,
-          })),
-        }));
-        setAreaOptions(data ?? []);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const displayRender = (labels) => labels[labels.length - 1];
 
   // Handlers for price and area sliders
   const handlePriceChange = (value) => {
@@ -67,6 +25,16 @@ const FilterHouse = () => {
   const handleAreaChange = (value) => {
     if (value[0] !== areaRange[0] || value[1] !== areaRange[1]) {
       dispatch(action.setArea(value));
+    }
+  };
+  const handleBedroomCountChange = (value) => {
+    if (value[0] !== bedroomCount[0] || value[1] !== bedroomCount[1]) {
+      dispatch(action.setBedRoomCount(value));
+    }
+  };
+  const handleBathroomCountChange = (value) => {
+    if (value[0] !== bathroomCount[0] || value[1] !== bathroomCount[1]) {
+      dispatch(action.setBathRoomCount(value));
     }
   };
 
@@ -93,7 +61,7 @@ const FilterHouse = () => {
       </div>
 
       {/* Price Range */}
-      <div className='house_price mt-3'>
+      <div className='house_price mt-5'>
         <div className='d-flex justify-content-between'>
           <h6>Khoảng giá</h6>
         </div>
@@ -134,7 +102,7 @@ const FilterHouse = () => {
       </div>
 
       {/* Area Range */}
-      <div className='house_area mt-3'>
+      <div className='house_area mt-5'>
         <div className='d-flex justify-content-between'>
           <h6>Diện tích sàn</h6>
         </div>
@@ -156,6 +124,55 @@ const FilterHouse = () => {
               style={{width: '110px'}}
               suffix='m²'
               onChange={(value) => dispatch(action.setArea([areaRange[0], value || 1000]))}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className='house_area mt-5'>
+        <div className='d-flex justify-content-between'>
+          <h6>Số lượng phòng ngủ</h6>
+        </div>
+        <div className=' '>
+          <Slider range max={10} value={bedroomCount} onChange={handleBedroomCountChange} />
+          <div className='d-flex justify-content-between '>
+            <InputNumber
+              value={bedroomCount[0]}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value.replace(/,/g, '')}
+              style={{width: '110px'}}
+              onChange={(value) => dispatch(action.setBedRoomCount([value || 0, bedroomCount[1]]))}
+            />
+            <InputNumber
+              value={bedroomCount[1]}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value.replace(/,/g, '')}
+              style={{width: '110px'}}
+              onChange={(value) => dispatch(action.setBedRoomCount([bedroomCount[0], value || 1000]))}
+            />
+          </div>
+        </div>
+      </div>
+      <div className='house_area mt-5'>
+        <div className='d-flex justify-content-between'>
+          <h6>Số lượng phòng tắm</h6>
+        </div>
+        <div className=' '>
+          <Slider range max={10} value={bathroomCount} onChange={handleBathroomCountChange} />
+          <div className='d-flex justify-content-between '>
+            <InputNumber
+              value={bathroomCount[0]}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value.replace(/,/g, '')}
+              style={{width: '110px'}}
+              onChange={(value) => dispatch(action.setBathRoomCount([value || 0, bathroomCount[1]]))}
+            />
+            <InputNumber
+              value={bathroomCount[1]}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={(value) => value.replace(/,/g, '')}
+              style={{width: '110px'}}
+              onChange={(value) => dispatch(action.setBathRoomCount([bathroomCount[0], value || 1000]))}
             />
           </div>
         </div>

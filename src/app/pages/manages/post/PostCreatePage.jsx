@@ -9,7 +9,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import _ from 'lodash';
 import {API_URL, requestGET, requestPOST, requestPUT} from 'src/utils/baseAPI';
 import ImageUpload from '../../../components/FileUpload';
-import {convertImage, handleImage, handleImage2} from 'src/utils/utils';
+import {convertImage, convertImage2, handleImage, handleImage2} from 'src/utils/utils';
 import {filterType} from 'src/utils/filter';
 import HeaderTitle from '../../../components/HeaderTitle';
 import {useAuth} from '../../../../app/modules/auth';
@@ -101,13 +101,15 @@ const PostCreatePage = () => {
     const values = await form.validateFields();
     try {
       const formData = form.getFieldsValue(true);
-      // if (id) {
-      //     formData.id = id;
-      // }
+      if (id) {
+        formData.id = id;
+      }
       formData.title = 'abc';
 
       formData.description = editorData;
-      formData.imageHouses = convertImage(file);
+      formData.imageHouses = convertImage(file).map((item) => ({
+        image: item.url,
+      }));
       formData.userId = currentUser.id;
       formData.userFullName = currentUser.fullName;
       formData.userPhone = currentUser.phoneNumber;
@@ -115,7 +117,6 @@ const PostCreatePage = () => {
 
       console.log(formData);
 
-      // const res = ;
       const res = id ? await requestPUT(`api/v1/motels/${id}`, formData) : await requestPOST(`api/v1/motels`, formData);
       if (res.data) {
         toast.success('Cập nhật thành công!');

@@ -11,6 +11,7 @@ import {requestPOST, requestGET, requestPOST_NEW, requestPUT_NEW, API_URL} from 
 import {removeAccents} from 'src/utils/slug';
 import TextArea from 'antd/es/input/TextArea';
 import ImageUpload from '../../../../components/FileUpload';
+import {convertImage} from 'src/utils/utils';
 
 const FormItem = Form.Item;
 
@@ -47,6 +48,12 @@ const ModalItem = (props) => {
         var _obj = res.data[0];
         _obj.startDate = _obj.startDate ? dayjs(_obj.startDate) : null;
         _obj.endDate = _obj.endDate ? dayjs(_obj.endDate) : null;
+        const fileContract = _obj.file.split('##').map((item) => ({
+          url: item,
+          path: item,
+          name: item.substring(item.lastIndexOf('/') + 1),
+        }));
+        setFile(fileContract);
         form.setFieldsValue(_obj);
       }
       setLoadding(false);
@@ -73,8 +80,11 @@ const ModalItem = (props) => {
       // if (id) {
       //   formData.id = id;
       // }
+      formData.file = convertImage(file)
+        .map((item) => item.url)
+        .join('##');
       formData.motelId = id;
-      //id ? await requestPUT_NEW(`api/v1/customers/${id}`, formData) :
+
       const res = await requestPOST_NEW(`api/v1/customers`, formData);
 
       if (res.status === 200) {

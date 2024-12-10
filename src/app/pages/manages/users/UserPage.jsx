@@ -8,6 +8,7 @@ import {useDispatch} from 'react-redux';
 import * as actionsModal from 'src/setup/redux/modal/Actions';
 import {useAuth} from '../../../../app/modules/auth';
 import _ from 'lodash';
+import {convertImage, handleImage2} from 'src/utils/utils';
 
 const FormItem = Form.Item;
 function UserPage() {
@@ -19,20 +20,31 @@ function UserPage() {
 
   useEffect(() => {
     form.setFieldsValue(currentUser);
+
+    if (currentUser?.imageUrl) {
+      const arr = _.without(_.split(currentUser.imageUrl, '##'), '');
+      const res = arr.map((i) => ({
+        url: currentUser.imageUrl, // Assuming a consistent URL pattern
+        path: i,
+        name: i.substring(i.lastIndexOf('/') + 1),
+      }));
+      setImage(res);
+    } else {
+      setImage([]); // Fallback for no images
+    }
   }, [currentUser]);
+
   const onFinish = async () => {
     const values = await form.validateFields();
     try {
       const formData = form.getFieldsValue(true);
+      formData.imageUrl = convertImage(image)[0].url;
 
-      console.log(formData);
-
-      // const res = ;
-      const res = await requestPUT(`api/v1/motels`, formData);
-      if (res.data) {
+      const res = await requestPUT(`api/users/${currentUser.id}`, formData);
+      if (res) {
         toast.success('Cập nhật thành công!');
         dispatch(actionsModal.setRandom());
-        navigate('/manage/owner/post');
+        navigate('/manage/dashboard');
       } else {
         //toast.error('Thất bại, vui lòng thử lại!');
         const errors = Object.values(res?.data?.errors ?? {});
@@ -86,11 +98,7 @@ function UserPage() {
                 <div className='row '>
                   <div className='col col-xl-4'>
                     <FormItem label='Ảnh đại diện'>
-                      <ImageUpload
-                        URL={`${API_URL}/api/v1/documentattachments/minios/user`}
-                        fileList={image}
-                        onChange={(e) => setImage(e.fileList)}
-                      />
+                      <ImageUpload URL={`${API_URL}/api/fileupload`} fileList={image} onChange={(e) => setImage(e.fileList)} />
                     </FormItem>
                   </div>
                   <div className='col col-xl-4'>
@@ -148,6 +156,21 @@ function UserPage() {
                       ]}
                     >
                       <Input placeholder='' />
+                    </FormItem>
+                  </div>
+                  <div className='col-xl-4 col-lg-6'>
+                    <FormItem
+                      label='Email'
+                      name='email'
+                      rules={[
+                        {required: true, message: 'Email không được để trống!'},
+                        {
+                          pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/g,
+                          message: 'Địa chỉ email không hợp lệ! Vui lòng kiểm tra lại!',
+                        },
+                      ]}
+                    >
+                      <Input placeholder='Nhập email của bạn' />
                     </FormItem>
                   </div>
                 </div>

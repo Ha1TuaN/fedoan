@@ -50,7 +50,11 @@ function ListHouse() {
                 <h3 className='card-label'>Tin đăng mới nhất</h3>
               </div>
               <div class='card-toolbar'>
-                <a href='#' class='btn btn-sm btn-light-primary font-weight-bold d-flex align-items-center'>
+                <a
+                  href='#'
+                  onClick={() => navigate('house/listhouse')}
+                  class='btn btn-sm btn-light-primary font-weight-bold d-flex align-items-center'
+                >
                   <span>
                     Xem thêm <i className='fa-solid fa-arrow-right me-1'></i>
                   </span>
@@ -61,6 +65,12 @@ function ListHouse() {
               <List
                 grid={{gutter: 16, column: 4}}
                 dataSource={data}
+                pagination={{
+                  onChange: (page) => {
+                    console.log(page);
+                  },
+                  pageSize: 12,
+                }}
                 renderItem={(item) => (
                   <List.Item>
                     <Card
