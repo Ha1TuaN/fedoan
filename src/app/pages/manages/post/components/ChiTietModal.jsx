@@ -44,26 +44,34 @@ const ModalItem = (props) => {
           orderBy: ['createdOn DESC'],
         })
       );
-      if (res && res.data) {
+      if (res && res.data && res.data.length > 0) {
         var _obj = res.data[0];
-        _obj.startDate = _obj.startDate ? dayjs(_obj.startDate) : null;
-        _obj.endDate = _obj.endDate ? dayjs(_obj.endDate) : null;
-        const fileContract = _obj.file.split('##').map((item) => ({
-          url: item,
-          path: item,
-          name: item.substring(item.lastIndexOf('/') + 1),
-        }));
-        setFile(fileContract);
-        form.setFieldsValue(_obj);
+        if (_obj) {
+          _obj.startDate = _obj.startDate ? dayjs(_obj.startDate) : null;
+          _obj.endDate = _obj.endDate ? dayjs(_obj.endDate) : null;
+          const fileContract = (_obj.file ?? '').split('##').map((item) => ({
+            url: item,
+            path: item,
+            name: item.substring(item.lastIndexOf('/') + 1),
+          }));
+          setFile(fileContract);
+          form.setFieldsValue(_obj);
+        } else {
+          console.warn('No valid object found in API response.');
+        }
+      } else {
+        console.warn('Empty or invalid API response.');
       }
+
       setLoadding(false);
     };
-
-    fetchData();
+    if (id) {
+      fetchData();
+    }
 
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   const handleCancel = () => {
     form.resetFields();

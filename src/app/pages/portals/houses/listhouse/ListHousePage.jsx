@@ -87,6 +87,7 @@ function ListHousePage() {
                   id: item.id,
                   lat: item.lat,
                   lng: item.lng,
+                  address: item.address,
                 }))}
               />
             </div>

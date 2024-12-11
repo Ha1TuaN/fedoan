@@ -70,7 +70,16 @@ const MasterLayout = () => {
                                 items: [
                                   {
                                     key: 'profile',
-                                    label: <a>Thông tin người dùng</a>,
+                                    label: (
+                                      <a
+                                        href='#'
+                                        onClick={() => {
+                                          navigate('manage/profile');
+                                        }}
+                                      >
+                                        Thông tin người dùng
+                                      </a>
+                                    ),
                                   },
                                   {
                                     key: 'createdPost',
@@ -155,14 +164,23 @@ const MasterLayout = () => {
                               items: [
                                 {
                                   key: 'profile',
-                                  label: <a>Thông tin người dùng</a>,
+                                  label: (
+                                    <a
+                                      href='#'
+                                      onClick={() => {
+                                        navigate('manage/profile');
+                                      }}
+                                    >
+                                      Thông tin người dùng
+                                    </a>
+                                  ),
                                 },
                                 {
                                   key: 'createdPost',
                                   label: (
                                     <a
                                       onClick={() => {
-                                        navigate(`/manage/owner/createpost`);
+                                        navigate(`manage/owner/createdpost`);
                                       }}
                                     >
                                       Tạo bài đăng

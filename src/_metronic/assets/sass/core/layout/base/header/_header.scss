@@ -13,9 +13,9 @@
 @include media-breakpoint-up(lg) {
     // Base
     .app-header {
-        @include property( z-index, $app-header-base-z-index);
+        @include property( z-index, $app-bg-color-dark);
 
-        background-color: var(--kt-app-header-base-bg-color);
+        background-color: #1e1e2d;
         box-shadow: var(--kt-app-header-base-box-shadow);
         border-bottom: var(--kt-app-header-base-border-bottom);
     }    

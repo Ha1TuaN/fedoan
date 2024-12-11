@@ -1,16 +1,16 @@
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import {KTIcon, toAbsoluteUrl} from '../../../helpers';
-import {useLayout} from '../../core';
-import {MutableRefObject, useEffect, useRef, useState} from 'react';
-import {ToggleComponent} from '../../../assets/ts/components';
+import { KTIcon, toAbsoluteUrl } from '../../../helpers';
+import { useLayout } from '../../core';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { ToggleComponent } from '../../../assets/ts/components';
 
 type PropsType = {
   sidebarRef: MutableRefObject<HTMLDivElement | null>;
 };
 
 const SidebarLogo = (props: PropsType) => {
-  const {config} = useLayout();
+  const { config } = useLayout();
   const toggleRef = useRef<HTMLDivElement>(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -66,19 +66,19 @@ const SidebarLogo = (props: PropsType) => {
     <div className='app-sidebar-logo px-6 d-flex align-items-center' id='kt_app_sidebar_logo'>
       <Link to='/' className='d-flex align-items-center'>
         {config.layoutType === 'dark-sidebar' ? (
-          <img alt='Logo' src={toAbsoluteUrl('/media/logos/logohouse.jpg')} className='h-40px app-sidebar-logo-default' />
+          <img alt='Logo' src={toAbsoluteUrl('/media/logos/logo.svg')} className='app-sidebar-logo-default' />
         ) : (
           <>
-            <img alt='Logo' src={toAbsoluteUrl('/media/logos/logohouse.jpg')} className='h-40px app-sidebar-logo-default theme-light-show' />
-            <img alt='Logo' src={toAbsoluteUrl('/media/logos/logohouse.jpg')} className='h-40px app-sidebar-logo-default theme-dark-show' />
+            <img alt='Logo' src={toAbsoluteUrl('/media/logos/logo.svg')} className='app-sidebar-logo-default theme-light-show' />
+            <img alt='Logo' src={toAbsoluteUrl('/media/logos/logo.svg')} className='app-sidebar-logo-default theme-dark-show' />
           </>
         )}
-        {(!isMinimized || isHovered) && <span className='logo logo-title fs-1 ms-5 fw-bolder'>House Go</span>}
+        {(!isMinimized || isHovered) && <span className='logo logo-title fs-1 ms-5 fw-bolder'></span>}
       </Link>
 
-      <img alt='Logo' src={toAbsoluteUrl('/media/logos/logohouse.jpg')} className='h-40px app-sidebar-logo-minimize' />
+      <img alt='Logo' src={toAbsoluteUrl('/media/logos/logo.svg')} className='h-40px app-sidebar-logo-minimize' />
     </div>
   );
 };
 
-export {SidebarLogo};
+export { SidebarLogo };

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api';
+import {GoogleMap, Marker, useJsApiLoader, InfoWindow} from '@react-google-maps/api';
 import {Cascader, Spin, notification} from 'antd';
 import {requestPOST} from 'src/utils/baseAPI';
 import _ from 'lodash';
-import {useDispatch, useSelector} from 'react-redux'; // Import useSelector
+import {useDispatch, useSelector} from 'react-redux';
 import * as action from '../../../../../setup/redux/filter/Actions';
 
 const MapHouse = ({locations}) => {
@@ -16,7 +16,7 @@ const MapHouse = ({locations}) => {
   const [areas, setAreas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [place, setPlace] = useState({lat: 21.0285, lng: 105.8542});
-
+  const [hoveredMarkerId, setHoveredMarkerId] = useState(null); // ID của marker đang hover
   const {isLoaded} = useJsApiLoader({
     googleMapsApiKey: 'AIzaSyCPmrcwqPtSIze8rorai9g0q63BySdWHQg', // Đảm bảo rằng API key hợp lệ
   });
@@ -34,6 +34,7 @@ const MapHouse = ({locations}) => {
   };
 
   const center = calculateCenter();
+
   const fetchAreas = async () => {
     try {
       const res = await requestPOST('api/v1/areas/search', {
@@ -65,6 +66,7 @@ const MapHouse = ({locations}) => {
       throw error;
     }
   };
+
   useEffect(() => {
     const loadAreas = async () => {
       setLoading(true);
@@ -80,6 +82,7 @@ const MapHouse = ({locations}) => {
   }, []);
 
   const displayRender = (labels) => labels[labels.length - 1];
+
   const handleCascaderChange = (value, place) => {
     if (value) {
       const address = place[1].name;
@@ -115,16 +118,29 @@ const MapHouse = ({locations}) => {
           expandTrigger='hover'
           displayRender={displayRender}
           onChange={handleCascaderChange}
-          value={[provinceId, districtId]} // Gắn giá trị Redux vào đây
-          placeholder='Tìm theo khu vực'
+          value={provinceId && districtId ? [provinceId, districtId] : null}
+          placeholder={provinceId && districtId ? '' : 'Tìm theo khu vực'}
           style={{width: '100%', marginBottom: '10px'}}
         />
       </Spin>
 
       <div style={{width: '100%', height: '300px'}}>
-        <GoogleMap mapContainerStyle={{width: '100%', height: '100%'}} zoom={15} center={place}>
+        <GoogleMap mapContainerStyle={{width: '100%', height: '100%'}} zoom={10} center={place}>
           {locations.map((location) => (
-            <Marker key={location.id} position={{lat: location.lat, lng: location.lng}} />
+            <Marker
+              key={location.id}
+              position={{lat: location.lat, lng: location.lng}}
+              onMouseOver={() => setHoveredMarkerId(location.id)} // Đặt ID của marker
+              onMouseOut={() => setHoveredMarkerId(null)} // Xóa ID khi hover ra ngoài
+            >
+              {hoveredMarkerId === location.id && ( // Chỉ hiển thị nếu ID khớp
+                <InfoWindow>
+                  <div>
+                    <strong>Địa chỉ:</strong> {location.address || 'Không có thông tin địa chỉ'}
+                  </div>
+                </InfoWindow>
+              )}
+            </Marker>
           ))}
         </GoogleMap>
       </div>
