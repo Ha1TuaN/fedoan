@@ -6,7 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import {useDispatch} from 'react-redux';
 import * as actionsModal from 'src/setup/redux/modal/Actions';
-import {useAuth} from '../../../../app/modules/auth';
+import {useAuth} from '../../../modules/auth';
 import _ from 'lodash';
 import {convertImage, handleImage2} from 'src/utils/utils';
 

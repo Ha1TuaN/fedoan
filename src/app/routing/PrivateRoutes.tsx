@@ -1,14 +1,15 @@
-import { lazy, FC, Suspense } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
-import { MasterLayout } from '../../_metronic/layout/MasterLayout';
-import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper';
-import { WithChildren } from '../../_metronic/helpers';
-import { useAuth } from 'src/app/modules/auth';
-import UserPage from '../pages/manages/users/UserPage';
+import {lazy, FC, Suspense} from 'react';
+import {Route, Routes, Navigate} from 'react-router-dom';
+import {MasterLayout} from '../../_metronic/layout/MasterLayout';
+import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper';
+import {WithChildren} from '../../_metronic/helpers';
+import {useAuth} from 'src/app/modules/auth';
+import UserPage from '../pages/manages/profile/UserPage';
+import MembershipPage from '../pages/manages/membership/MembershipPage';
 
 const PrivateRoutes = () => {
   const OwnerPage = lazy(() => import('../pages/manages/OwnerPage'));
-  const { currentUser } = useAuth();
+  const {currentUser} = useAuth();
 
   if (!currentUser) {
     // Redirect unauthenticated users to login
@@ -28,14 +29,16 @@ const PrivateRoutes = () => {
           }
         />
         <Route path='profile' element={<UserPage />} />
+        <Route path='memebership' element={<MembershipPage />} />
+
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
     </Routes>
   );
 };
 
-const SuspensedView: FC<WithChildren> = ({ children }) => {
+const SuspensedView: FC<WithChildren> = ({children}) => {
   return <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>;
 };
 
-export { PrivateRoutes };
+export {PrivateRoutes};
