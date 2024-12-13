@@ -11,7 +11,7 @@ import {useNavigate} from 'react-router-dom';
 
 const FormItem = Form.Item;
 
-const MembershipPage = () => {
+const UserPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -28,7 +28,7 @@ const MembershipPage = () => {
     <>
       <div className='card card-xl-stretch mb-xl-9'>
         <div className='px-3 py-3 border-bottom border-secondary border-bottom-solid d-flex align-items-center justify-content-between'>
-          <h3 className='card-title fw-bold text-header-td fs-4 mb-0'>{'Quản lý gói hội viên'}</h3>
+          <h3 className='card-title fw-bold text-header-td fs-4 mb-0'>{'Quản lý người dùng'}</h3>
           <div className='card-toolbar'>
             <div className='btn-group me-2 w-200px'>
               <input
@@ -64,4 +64,4 @@ const MembershipPage = () => {
   );
 };
 
-export default MembershipPage;
+export default UserPage;

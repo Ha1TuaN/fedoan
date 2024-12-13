@@ -34,7 +34,7 @@ const UsersList = (props) => {
       try {
         setLoading(true);
         const res = await requestPOST(
-          `api/v1/memberships/search`,
+          `api/users/search`,
           _.assign(
             {
               advancedSearch: {
@@ -81,7 +81,7 @@ const UsersList = (props) => {
         break;
 
       case 'delete':
-        var res = await requestDELETE(`api/v1/memberships/${item.id}`);
+        var res = await requestDELETE(`api/users/${item.id}`);
         if (res) {
           toast.success('Thao tác thành công!');
           dispatch(actionsModal.setRandom());
@@ -108,23 +108,28 @@ const UsersList = (props) => {
       render: (text, record, index) => <div>{(offset - 1) * size + index + 1}</div>,
     },
     {
-      title: 'Tên gói',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Họ tên',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      className: 'text-center',
     },
     {
-      title: 'Giá',
-      dataIndex: 'price',
-      key: 'price',
+      title: 'Tên đăng nhập',
+      dataIndex: 'userName',
+      key: 'userName',
       className: 'text-center',
-      render: (text, record) => <span>{formatNumber(record.price)} đ / 1 bài đăng</span>,
     },
     {
-      title: 'Loại gói',
-      dataIndex: 'isVip',
-      key: 'isVip',
+      title: 'Số điện thoại',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
       className: 'text-center',
-      render: (data) => (data ? 'Gói vip' : 'Gói cơ bản'),
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      className: 'text-center',
     },
     {
       title: 'Thao tác',

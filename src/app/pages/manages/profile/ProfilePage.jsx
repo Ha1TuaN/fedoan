@@ -11,7 +11,7 @@ import _ from 'lodash';
 import {convertImage, handleImage2} from 'src/utils/utils';
 
 const FormItem = Form.Item;
-function UserPage() {
+function ProfilePage() {
   const [form] = Form.useForm();
   const [image, setImage] = useState([]);
   const navigate = useNavigate();
@@ -183,4 +183,4 @@ function UserPage() {
   );
 }
 
-export default UserPage;
+export default ProfilePage;

@@ -4,8 +4,10 @@ import {MasterLayout} from '../../_metronic/layout/MasterLayout';
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper';
 import {WithChildren} from '../../_metronic/helpers';
 import {useAuth} from 'src/app/modules/auth';
-import UserPage from '../pages/manages/profile/UserPage';
+import ProfilePage from '../pages/manages/profile/ProfilePage';
 import MembershipPage from '../pages/manages/membership/MembershipPage';
+import UserPage from '../pages/manages/user/UserPage';
+import MembershipPaymentPage from '../pages/manages/membershippayement/MembershipPayementPage';
 
 const PrivateRoutes = () => {
   const OwnerPage = lazy(() => import('../pages/manages/OwnerPage'));
@@ -28,8 +30,11 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-        <Route path='profile' element={<UserPage />} />
+        <Route path='profile' element={<ProfilePage />} />
+        <Route path='user' element={<UserPage />} />
+
         <Route path='memebership' element={<MembershipPage />} />
+        <Route path='memebership/payment' element={<MembershipPaymentPage />} />
 
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
